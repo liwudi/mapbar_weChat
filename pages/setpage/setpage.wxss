@@ -1,0 +1,83 @@
+/* pages/setpage/setpage.wxss */
+.container{
+    background-color: #ffffff;
+    font-size: 30rpx;
+}
+.group-set{
+    width: 100%;
+    height: 50rpx;
+    display: flex;
+    align-items: center;
+    border-bottom: 2rpx solid #eeeeee;
+    border-top: 16rpx solid #eeeeee;
+    padding-left: 20rpx;
+    color: #aaaaaa;
+    font-size: 24rpx;
+}
+.common{
+    box-sizing: border-box;
+    padding-left: 20rpx;
+    padding-right: 30rpx;
+    width: 100%;
+    height: 100rpx;
+    border-bottom: 2rpx solid #eeeeee;
+}
+.group-name{
+    display: flex;
+    align-items: center; 
+    justify-content: space-between;
+    color: #555555;
+}
+.auto-speak{
+    display: flex;
+    align-items: center; 
+    justify-content: space-between;
+    color: #555555;
+}
+.my-handle{
+    color: #3c78ff; 
+}
+.title{
+    text-align: center;
+    color: black;
+}
+.more-box{
+    display: flex;
+    align-items: center;
+    color: #aaaaaa; 
+}
+.more-img{
+    width: 40rpx;
+    height: 40rpx;
+}
+.modal-content{
+    width: 100%;
+    height: 70rpx;
+    border: 1rpx solid #aaaaaa;
+    margin-top: 15rpx;
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 0 10rpx;
+}
+.modal-input{
+    width: 80%;
+}
+
+.input-number{
+  width: 100%;
+}
+.content-cancel{
+  position: absolute;
+  left: 85%;
+  top: 8rpx;
+  background-color: #8a8a8a;
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  color: #fff;
+}
+.number-cancel{
+  left: 90%;
+  top: 18rpx;
+}

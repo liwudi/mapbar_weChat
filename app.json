@@ -1,0 +1,19 @@
+{
+  "pages":[
+    "pages/index/index",
+    "pages/help/help",
+    "pages/search/search",
+    "pages/searchResult/searchResult",
+    "pages/watchMap/watchMap",
+    "pages/destination/destination",
+    "pages/setpage/setpage",
+    "pages/chat/chat",
+    "pages/successes/successes"
+  ],
+  "window":{
+    "backgroundTextStyle":"light",
+    "navigationBarBackgroundColor": "#3c78ff",
+    "navigationBarTitleText": "图吧同行",
+    "navigationBarTextStyle":"#fff"
+  }
+}

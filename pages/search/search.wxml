@@ -1,0 +1,49 @@
+<!--pages/search/search.wxml-->
+<view class="container">
+    <view class="text center">设置群目的地</view>
+    <view class="search-box">
+        <view class="search">
+            <icon class="search-icon center" type="search" size="23"></icon>
+            <input class="input" type="text" placeholder="请输入搜索的地点" bindinput="inputEvent" bindfocus="focusEvent" value="{{inputData}}"/>
+        </view>
+        <view class="btn center" hover-class="hover-btn" bindtap="searchEvent">搜索</view>
+    </view>
+    <!--关键词suggest联想数据列表部分-->
+    <view class="suggestList">
+        <view class="item" wx:for="{{suggestList}}">
+            <icon class="item-icon center" type="search" size="18"></icon>
+            <view class="item-content"  id="{{index}}" bindtap="itemEvent">
+                <view class="text-box1">
+                    <text class="name-pro">{{item.proName}}</text>
+                    <text class="name-left">{{item.leftName}}</text>
+                    <text class="name-right">{{item.rightName}}</text>
+                </view>
+                <view class="text-box2">
+                    <text class="district">{{item.district}}</text>
+                </view>
+            </view> 
+            <view class="list-input center">
+                <image class="list-input-image" data-id="{{index}}" bindtap="arrowEvent" src="../resouces/myicon/listInput.png"></image>
+            </view>
+        </view>
+    </view>
+    <!--历史记录信息列表-->
+    <view  class="history" wx:if="{{historyRecordList.length&&!inputData}}">
+        <view class="item" wx:for="{{historyRecordList}}">
+            <view class="item-left-box center">
+                <image class="item-left-box-image" src="../resouces/myicon/clock.png"></image>
+            </view>
+            <view class="item-content history-content" id="{{index}}"  bindtap="historyItemEvent">
+                {{item}}
+            </view>
+            <view class="list-input center">
+                <image class="list-input-image"  data-index="{{index}}" bindtap="historyArrowEvent" src="../resouces/myicon/listInput.png"></image>
+            </view>
+        </view>
+        <view class="item center clear-history" bindtap="clearEvent" >清除历史记录</view>
+    </view>
+
+
+</view>
+
+

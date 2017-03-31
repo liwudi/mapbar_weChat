@@ -1,0 +1,142 @@
+<!--pages/destination/destination.wxml-->
+<view class="container" wx:if="{{userInfo.userId}}">
+    <!--用户列表信息展示-->
+    <view class="userlist" >
+        <!--自己信息-->
+        <view class="item">
+            <view class="left-box">
+                <image class="left-image" src="{{userInfo.userImg}}"></image>
+                <image class="position_image" src="{{my_tag_url||avatar_tag_url}}"></image>
+            </view>
+            <view class="content">
+                <view class="content-top">
+                    <text class="name">{{userInfo.userName}}</text>
+                    <text class="distination">目的地<text class="main-color">{{destination}}</text></text>
+                </view>
+                <view class="content-bottom">
+                    <view class="content-bottom-left">
+                        <text>距目的地</text>
+                        <text class="main-color">{{mydistance}}</text>
+                        <text>公里，</text>
+                        <text class="main-color">{{mytime}}</text>
+                        <text>分钟</text>
+                    </view>
+                    <view class="content-bottom-right">
+                        <text></text>
+                        <text class="speed-value">{{myspeed}}km/h</text>
+                        <!--<text class="split">|</text>
+                        <text class="route green"  wx:if="{{myspeed>=100}}">畅通</text>
+                        <text class="route orange"  wx:elif="{{myspeed<100&&myspeed>=20}}">正常</text>
+                        <text class="route red"  wx:else>拥堵</text>-->
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <!--群成员信息之列表展示-->
+    <view class="users" wx:if="{{usersList.length&&usersListTag}}">
+        <view class="users-list" wx:for="{{usersList}}">
+            <!--<view class="user-code center">
+                <view class="red-cicle center">
+                    {{index+1}}
+                </view>
+            </view>-->
+            <view class="left-box">
+                <image class="left-image" src="{{item.userImg}}"></image>
+                <image class="position_image" src="{{item.avatar_url}}"></image>
+            </view>
+            <view class="content">
+                <view class="content-top">
+                    <text class="name left-name">{{item.userName}}</text>
+                    <text class="distination right-distination">{{item.updateTime}}</text>
+                </view>
+                <view class="content-bottom">
+                    <view class="content-bottom-left">
+                        <text>距目的地</text>
+                        <text class="main-color">{{item.distanceSurplus}}</text>
+                        <text>公里，</text>
+                        <text class="main-color">{{item.surplusTime}}</text>
+                        <text>分钟</text>
+                    </view>
+                    <view class="content-bottom-right">
+                        <text class="speed-value">{{item.speed}}km/h</text>
+                        <!--<text class="split">|</text>
+                        <text class="route green"  wx:if="{{item.speed>=40}}">畅通</text>
+                        <text class="route orange"  wx:elif="{{item.speed<40&&item.speed>=20}}">正常</text>
+                        <text class="route red"  wx:else>拥堵</text>-->
+                    </view>
+                </view>
+            </view>                            
+        </view>
+        
+    </view>
+    <view class="up-image center"  wx:if="{{usersList.length && usersListTag}}" bindtap="changeEvent">
+        <image class="up-img" src="../resouces/myicon/up.png"></image>
+    </view>
+    <!--群成员信息之轮播展示-->
+    <view class="swiper-box" wx:if="{{usersList.length && !usersListTag}}">
+    <swiper class="banner"  indicator-dots="{{indicatorDots}}" circular="{{true}}" autoplay="{{true}}" interval="{{2000}}" duration="{{500}}">
+        <block wx:for="{{usersList}}">
+            <swiper-item>
+                <view class="users-list">
+                    <!--<view class="user-code center">
+                        <view class="red-cicle center">
+                            {{index+1}}
+                        </view>
+                    </view>-->
+                    <view class="left-box">
+                        <image class="left-image" src="{{item.userImg}}"></image>
+                        <image class="position_image" src="{{item.avatar_url}}"></image>
+                    </view>
+                    <view class="content">
+                        <view class="content-top">
+                            <text class="name left-name">{{item.userName}}</text>
+                            <text class="distination right-distination">{{item.updateTime}}</text>
+                        </view>
+                        <view class="content-bottom">
+                            <view class="content-bottom-left">
+                                <text>距目的地</text>
+                                <text class="main-color">{{item.distanceSurplus}}</text>
+                                <text>公里，</text>
+                                <text class="main-color">{{item.surplusTime}}</text>
+                                <text>分钟</text>
+                            </view>
+                            <view class="content-bottom-right">
+                                <text class="speed-value">{{item.speed}}km/h</text>
+                                <!--<text class="split">|</text>
+                                <text class="route green"  wx:if="{{item.speed>=40}}">畅通</text>
+                                <text class="route orange"  wx:elif="{{item.speed<40&&item.speed>=20}}">正常</text>
+                                <text class="route red"  wx:else>拥堵</text>-->
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </swiper-item>
+        </block>
+    </swiper>
+    </view>
+    <view class="up-image center" wx:if="{{usersList.length && !usersListTag}}"  bindtap="changeEvent">
+        <image class="up-img" src="../resouces/myicon/down.png"></image>
+    </view>
+    <!--地图信息展示-->
+    <map id="map" longitude="{{longitude}}" latitude="{{latitude}}"  scale="17"
+     controls="{{controls}}" bindcontroltap="controlsEvent" markers="{{markers}}"  include-points="{{include_markers}}" bindmarkertap="markertap" polyline="{{polyline}}"  show-location >
+     </map>
+    <!--底部聊天以及设置界面展示-->
+    <view class="speak">
+        <view class="left-set center">
+            <image class="img" src="../resouces/myicon/set.png" bindtap="setEvent"></image>
+        </view>
+        <view class="middle-btn center" bindtouchstart="touchStartEvent" bindtouchend="touchEndEvent" bindtouchcancel="touchCancelEvent">
+            <button class="speak-btn center" hover-class="button-hover">按住说话</button>
+        </view>
+        <view class="right-chat center" wx:if="{{!isSpeak}}">
+            <image class="img" src="../resouces/myicon/chat.png" bindtap="chatEvent"></image>
+            <view class="no-read-info center" wx:if="{{voice_number}}">{{voice_number}}</view>
+        </view>
+        <view class="right-chat center" wx:if="{{isSpeak}}">
+            <image class="img my-image" src="{{speaker_url}}" bindtap="chatEvent"></image>
+            <image class="hornc_image" src="{{horn_url}}"></image>
+        </view>
+    </view>
+</view>

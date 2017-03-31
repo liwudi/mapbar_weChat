@@ -1,0 +1,32 @@
+<!--pages/setpage/setpage.wxml-->
+
+<view class="container">
+    
+    <view class="group-name common"  bindtap="setEvent">
+        <text>群名称</text>
+        <view class="more-box">
+            <text>{{groupName}}</text>
+            <image class="more-img" src="../resouces/myicon/more.png"></image>
+        </view>
+        
+    </view>
+    <view class="auto-speak common">
+        <text>自动播放语音消息</text>
+        <switch bindchange="switchChange" checked="{{isAutoPlay}}"/>
+    </view>
+    <view wx:if="{{isGroupHost}}" class="my-handle center common" bindtap="confirmEvent">解散并退出群组</view>
+    <view wx:if="{{!isGroupHost}}" class="my-handle center common" bindtap="confirmEvent">退出群组</view>
+</view>
+<modal class="modal" hidden="{{modalHidden}}"  bindconfirm="modalChange" bindcancel="modalCancel">
+    <view class="title"> 修改群名称 </view>
+    
+    <view class="modal-content">
+      <view  class="input-number">
+        <input class="modal-input" placeholder="请输入群名称" value="{{inputValue}}" bindinput="inputEvent"  type="text"  />
+      </view>
+      <view bindtap="clearContentEvent"  wx:if="{{isShowName}}" class="content-cancel number-cancel">
+        <view class="cancel-row"></view>
+        <view class="cancel-clomn"></view>
+      </view>
+    </view>
+</modal>

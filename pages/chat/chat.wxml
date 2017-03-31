@@ -1,0 +1,54 @@
+<!--pages/chat/chat.wxml-->
+<view class="container set-container">
+    <view class="chat" wx:for="{{chatList}}" wx:for-index="idx" wx:for-item="itemName">
+        <view class="time-box center">
+            <view class="time center">{{itemName.times}}</view>
+        </view>
+        <view class="user-list" wx:for="{{itemName.userInfo}}">
+            <view class="not-me" wx:if="{{!item.isMe}}">
+                <view class="avatar-image-box">
+                    <image class="avatar-image" src="{{item.avatarUrl}}"></image>
+                </view>
+                <view class="not-me-box margin-left" data-id="{{idx}}.{{index}}" bindtap="tapNotMeEvent">
+                    <view class="not-me-box-angle">
+                    
+                    </view>
+                    <view class="not-me-box-cicle center">
+                        <view class="cicle-red" wx:if="{{item.tag}}"></view>
+                    </view>
+                    <text class="not-me-box-text center">{{item.voiceLenth}}</text>
+                    <image class="horn" src="{{item.hronUrl}}"></image>
+                </view>
+                
+            </view>
+            <view class="me" wx:if="{{item.isMe}}">
+                <view class="me-box" data-id="{{idx}}.{{index}}"  bindtap="tapMeEvent">
+                    <view class="me-box-angle">
+                    
+                    </view>
+                    <view class="me-box-cicle center">
+                        <view class="cicle-red" wx:if="{{item.tag}}"></view>
+                    </view>
+                    <text class="me-box-text center">{{item.voiceLenth}}</text>
+                    <image class="horn" src="{{item.hronUrl}}"></image>
+                </view>
+                <view class="avatar-image-box">
+                    <image class="avatar-image margin-left" src="{{item.avatarUrl}}"></image>
+                </view>
+            </view>
+        </view>
+    </view>
+</view>
+
+<view class="speak">
+    <view class="left-set center">
+        <!--<image class="img" src="../resouces/myicon/set.png" bindtap="setEvent"></image>-->
+    </view>
+    <view class="middle-btn center" bindtouchstart="touchStartEvent" bindtouchend="touchEndEvent" bindtouchcancel="touchCancelEvent">
+        <button class="speak-btn center">按住说话</button>
+    </view>
+    <view class="right-chat center">
+        <!--<image class="img" src="../resouces/myicon/chat.png" bindtap="chatEvent"></image>-->
+    </view>
+</view>
+

@@ -1,0 +1,7 @@
+<!--pages/help/help.wxml-->
+<view class="container">
+    <view class="item" wx:for="{{array}}">
+        <text class="title">{{index+1}}.{{item.title}}</text>
+        <text class="content">{{item.content}}</text>
+    </view>
+</view>

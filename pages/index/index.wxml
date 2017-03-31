@@ -1,0 +1,134 @@
+<!--index.wxml-->
+<view class="container" wx:if="{{userInfo.userId}}">
+  <view  class="home-top">
+    <view class="text-box center">
+      <text class="center">设置群目的地</text>
+    </view>
+    <view class="input-box center">
+      <view class="search-index">
+        <icon class="search-icon-index center" type="search" size="23"></icon>
+        <view class="input-index" type="text" placeholder="请输入搜索的地点" bindtap="tapEvent">请输入搜索的地点</view>
+      </view>
+    </view>
+  </view>
+  <!--首次登陆展示-->
+  <view class="list-box" wx:if="{{groupList.length === 0}}">
+    <view class="list-top">
+      <text class="center list-text">快来设置目的地分享给好友</text>
+      <text class="center list-text">一起组队出发吧</text>
+    </view>
+    <view class="list-middle">
+      <view class="item" wx:for="{{array}}" wx:key="content">
+        <view class="item-image center">
+          <image class="image-first" src="{{item.src}}"></image>
+        </view>
+        <view class="item-content">{{item.content}}</view>
+      </view>
+    </view>
+    <view class="list-bottom center">
+      <view class="help-box" bindtap="helpEvent">
+        <image class="help-icon" src="../resouces/myicon/help.png"></image>
+        <text class="help-text center">帮助</text>
+      </view>
+    </view>
+  </view>
+  <!--再次登陆展示-->
+  <view class="second-login"  wx:if="{{groupList.length > 0}}">
+    <view class="user-name">
+      <view class="user-image">
+        <image class="image" src="{{userInfo.userImg||userimg}}"></image>
+      </view>
+      <text class="user-name-text">{{userInfo.userName}}</text>
+    </view>
+
+
+    <view class="user-info">
+      <view class="single-distance">
+        <view class="text1">
+          <text class="target-color target-size left-number">{{userInfo.maxDistance}}</text>
+          <text class="right-text">公里</text>
+        </view>
+        <view class="text2">单次最远</view>
+        <!--<view class="text3">
+          <text>超过</text>
+          <text class="target-color">{{percentSD}}</text>
+          <text>的用户</text>
+        </view>-->
+      </view>
+      <view class="all-distance">
+        <view class="text1">
+          <text class="target-color target-size left-number">{{userInfo.totalDistance}}</text>
+          <text class="right-text">公里</text>
+        </view>
+        <view class="text2">累计里程</view>
+        <!--<view class="text3">
+          <text>超过</text>
+          <text class="target-color">{{percentAD}}</text>
+          <text>的用户</text>
+        </view>-->
+      </view>
+      <view class="all-city">
+        <view class="text1">
+          <text class="target-color target-size left-number">{{userInfo.totalCitys}}</text>
+          <text class="right-text">个城市</text>
+        </view>
+        <view class="text2">足迹遍布</view>
+        <!--<view class="text3">
+          <text>超过</text>
+          <text class="target-color">{{percentAC}}</text>
+          <text>的用户</text>
+        </view>-->
+      </view>
+    </view>
+
+
+    <view class="user-group">
+      <view class="group-item" wx:for="{{groupList}}" data-id="{{index}}" bindtap="enterGroupEvent">
+        <view class="group-left center">
+          <image class="group-left-image" src="../resouces/myicon/grouped.png"></image>
+        </view>
+        <view class="group-middle">{{item.groupName}}</view>
+        <view class="group-right center">
+          <image class="group-right-image" src="../resouces/myicon/more.png"></image>
+        </view>
+      </view>
+    </view>
+    <view class="list-bottom center">
+      <view class="help-box" bindtap="helpEvent">
+        <image class="help-icon" src="../resouces/myicon/help.png"></image>
+        <text class="help-text center">帮助</text>
+      </view>
+    </view>
+  </view>
+  <modal class="modal" title="绑定手机号" wx:if="{{userInfo.userId && !isbind}}" cancel mask bindconfirm="modalConfirmEvent" bindcancel="modalCancelEvent">
+    <view class="number-box">
+      <view  class="input-number">
+        <input class="my-input" value="{{number_value}}" bindinput="inputNumberEvent"  type="text" placeholder="请输入电话号码" />
+      </view>
+      <view bindtap="clearNumberEvent" wx:if="{{isNumberShow}}" class="content-cancel number-cancel">
+        <view class="cancel-row"></view>
+        <view class="cancel-clomn"></view>
+      </view>
+    </view>
+    
+    <view class="your-code-box">
+      <view class="identify-code">
+        <view class="input-code">
+          <input class="my-input" type="text" value="{{code_value}}" bindinput="inputCodeEvent" placeholder="验证码"/>
+        </view>
+        
+        <view bindtap="clearCodeEvent" wx:if="{{isCodeShow}}" class="content-cancel">
+          <view class="cancel-row"></view>
+          <view class="cancel-clomn"></view>
+        </view>
+      </view>
+      
+      <view wx:if="{{!isClickCode}}" bindtap="getCodeEvent" class="get-code center">获取验证码</view>
+      <view wx:if="{{isClickCode}}" class="get-code center code-color">还剩余{{rest_time}}秒</view>
+    </view>
+    <view class="right-code red-color" wx:if="{{isWrong}}">请输入正确的验证码！</view>
+  </modal>
+</view>
+
+ 
+

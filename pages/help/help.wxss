@@ -1,0 +1,12 @@
+/* pages/help/help.wxss */
+.item{
+    padding: 30rpx;
+}
+.title{
+    font-weight: 600;
+    font-size: 28rpx;
+    display: block;
+}
+.content{
+    font-size: 28rpx;
+}

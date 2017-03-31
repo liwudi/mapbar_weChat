@@ -1,0 +1,137 @@
+/**app.wxss**/
+
+
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  justify-content: space-between;
+  font-family: "微软雅黑";
+  box-sizing: border-box;
+}
+
+.center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.main-color{
+  color: #3c78ff
+}
+.red-color{
+  color: red;
+}
+
+/*底部说话按钮样式*/
+.speak{
+    width: 100%;
+    height: 100rpx;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    display: flex;
+}
+.left-set{
+    flex: 1;
+}
+.middle-btn{
+    flex: 4;
+    
+}
+.speak-btn{
+    width: 100%;
+    height: 70%;
+}
+.right-chat{
+    flex: 1;
+    position: relative;
+}
+.img{
+    width: 60%;
+    height: 60%;
+}
+.no-read-info{
+  width: 30rpx;
+  height: 30rpx;
+  background-color: red;
+  border-radius: 50%;
+  font-size: 20rpx;
+  position: absolute;
+  left: 60%;
+  top: 18%;
+  color: #ffffff;
+}
+.button-hover {
+  background-color: #aaaaaa;
+}
+
+/*这是搜索列表样式*/
+.text{
+    height: 80rpx;
+    border-bottom: 2rpx solid #f3f3f3;
+    color: #777777;
+    font-size: 28rpx;
+}
+.search-box{
+    height: 80rpx;
+    border-bottom: 2rpx solid #f3f3f3;
+    padding: 20rpx;
+    display: flex;
+}
+.search{
+    flex: 5;
+    background-color: #f0f3f8;
+    margin-right: 20rpx;
+    display: flex;
+}
+.search-icon{
+    margin-left: 20rpx;
+    flex: 1;
+}
+.input{
+    height: 100%;
+    flex: 13;
+}
+.btn{
+    width: 150rpx;
+    border-radius: 10%;
+    background-color: #3c78ff;
+    color: white;
+}
+.other-input{
+  display: flex;
+  align-items: center;
+  color: #aaaaaa;
+}
+
+/**取消小圆点样式*/
+
+.cicle{
+    position: absolute;
+    left: 85%;
+    top: 8rpx;
+    background-color: #8a8a8a;
+    width: 40rpx;
+    height: 40rpx;
+    border-radius: 50%;
+    color: #fff;
+}
+.cancel-row{
+  width: 25rpx;
+  height: 5rpx;
+  background-color: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%) rotate(45deg);
+}
+.cancel-clomn{
+  width: 5rpx;
+  height: 25rpx;
+  background-color: #fff;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%) rotate(45deg);
+}
