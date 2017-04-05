@@ -53,5 +53,6 @@ function getNowDate(s = new Date().getTime()) {
 
 module.exports = {
   systemInfo,
-  getNowDate
+  getNowDate,
+  
 }

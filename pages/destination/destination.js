@@ -86,22 +86,33 @@ Page({
     })
     
     options.isShare && AppService.getUserInfo().then((res) => {
+      console.log(`进入分享界面`)
       if(res.statusCode == 200){
         isShare = true;
         _this.setData({
             userInfo: res.data.user,
             groupList: res.data.groupList,
         });
-
-        WxService.getLocation().then(res => {
-          let [longitude,latitude,speed] = [res.longitude,res.latitude,(res.speed == -1||undefined)?0:res.speed];
-          _this.updateLocation(longitude,latitude,speed); 
-        })
+        
+        return _this.getRoute();
       }
+    }).then(res => {
+      console.log(`分享之后执行了上传坐标点`,res);
+      AppService.getUserInfo().then(res => {
+        console.log(`重新获取用户信息groupList`,res.data.groupList);
+        if(res.statusCode == 200){
+          _this.setData({
+            userInfo: res.data.user,
+            groupList: res.data.groupList,
+          });
+        }
+        _this.dataDeal();
+      });
+      
     });
 
-    !isShare && AppService.getUserInfo().then(res => {
-      console.log(`getUserInfo11`,res);
+    !options.isShare && AppService.getUserInfo().then(res => {
+      
       if(res.statusCode == 200){
         _this.setData({
             userInfo: res.data.user,
@@ -113,7 +124,10 @@ Page({
       console.log(error);
     });
 
-    isShare && _this.dataDeal()
+    
+
+    //语音通道的建立
+    AppService.connectVoice();
   },
   onReady:function(){
     
@@ -137,15 +151,15 @@ Page({
   socketCatch: function(){
     let _this = this;
     wx.onSocketError(res => {
-      console.log('WebSocket连接打开失败，请检查！');
+      
       setTimeout(() => {
-        !_this.isUnLoad && service.connectToVoice(_this.data.userId);
+        !_this.isUnLoad && AppService.connectVoice();
       },1000)
     });
     wx.onSocketClose(res => {
-      console.log('WebSocket 已关闭！');
+     
       setTimeout(() => {
-        !_this.isUnLoad && service.connectToVoice(_this.data.userId);
+        !_this.isUnLoad && AppService.connectVoice();
       },1000)
     })
   },
@@ -163,7 +177,8 @@ Page({
     let _this = this;
 
     let theGroup = _this.data.groupList.find(item => item.groupId == _this.data.groupId)
-    
+    console.log(_this.data.groupList);
+    console.log(_this.data.groupId);
     _this.setData({
         destination: theGroup.destName
     });
@@ -330,7 +345,7 @@ Page({
       })
       //console.log(`users`,users);
       let mySelf = users.find(item => item.userId == _this.data.userInfo.userId);
-      console.log('myself', mySelf);
+      
       if (mySelf) {
           dealMySelf();
       }
@@ -515,6 +530,88 @@ Page({
     WxService.navigateTo(`../setpage/setpage?groupId=${_this.data.groupId}&groupName=${_this.data.groupName}&isGroupHost=${_this.data.isGroupHost}`);
   },
   chatEvent: function(){
-    WxService.navigateTo(`../chat/chat`);
+    let _this = this;
+    
+    WxService.navigateTo(`../chat/chat?groupId=${_this.data.groupId}&groupName=${_this.data.groupName}&isGroupHost=${_this.data.isGroupHost}`);
+  },
+  
+  //上传语音相关
+  touchStartEvent: function() {
+    let _this = this;
+
+    _this.startTime = new Date().getSeconds();
+    WxService.startRecord().then(res => {
+      console.log(res)
+      let tempFilePath = res.tempFilePath;
+
+      return WxService.saveFile(tempFilePath);
+    }).then(res => {
+      console.log(`saveFile`,res);
+      let savedFilePath = res.savedFilePath;
+      let userid =  _this.data.userId;
+      let groupid = _this.data.groupId;
+      let timelong = ((_this.endTime-_this.startTime)>=0)?(_this.endTime-_this.startTime):(60-_this.startTime+_this.endTime);
+      WxService.upLoadFile(savedFilePath,userid,groupid,timelong);
+    })
+
+  },
+  touchEndEvent: function() {
+    let _this=this;
+    wx.stopRecord();
+    _this.endTime = new Date().getSeconds();
+  },
+  // touchStartEvent:function(){
+  //   let _this=this;
+  //   startTime=new Date().getSeconds();
+  //   console.log("toucheStart");
+  //   wx.startRecord({
+  //     success: function(res) {
+  //       let tempFilePath = res.tempFilePath;//返回的一个录音地址
+  //       _this.setData({
+  //         tempFilePath:tempFilePath
+  //       });
+  //       wx.saveFile({
+  //         tempFilePath: _this.data.tempFilePath,
+  //         success: function(res){
+  //           let time=((endTime-startTime)>=0)?(endTime-startTime):(60-startTime+endTime);
+  //           if(true){
+  //             let savedFilePath = res.savedFilePath;
+  //             wx.uploadFile({
+  //               url: app.globalData.voice_url+'/voiceUp',//上传语音文件的服务器地址
+  //               filePath: savedFilePath,
+  //               name:'content',
+  //               // header: {}, // 设置请求的 header
+  //               formData: {
+  //                 userid: _this.data.userId,
+  //                 groupid:_this.data.groupId,
+  //                 timelong: time
+  //               }, 
+  //               success: function(res){
+  //                 console.log("上传语音成功");
+  //               }
+  //             });
+  //           } 
+  //         }
+  //       });     
+  //     }
+  //   });
+  // },
+  // touchEndEvent:function(){
+  //   let _this=this;
+  //   wx.stopRecord();
+  //   endTime=new Date().getSeconds();
+  // },
+  touchCancelEvent:function(){
+    wx.stopRecord();
+  },
+  onShareAppMessage: function () {
+    let _this=this;
+    let lat = this.data.destlat;
+    let lon = this.data.destlon;
+    return {
+      title: `群组分享`,
+      desc: `图吧是技术最好的地图导航类技术企业`,
+      path: `/pages/destination/destination?groupId=${this.data.groupId}&isGroupHost=false&lat=${lat}&lon=${lon}&isShare=true`,
+    }
   },
 })

@@ -51,6 +51,8 @@ Page({
       if(res.statusCode == 200){
         res.data.user.maxDistance = res.data.user.maxDistance.toFixed(2);
         res.data.user.totalDistance = res.data.user.totalDistance.toFixed(2);
+        //缓存全局userid，在适当的时候使用，可减少http请求。
+        app.globalData.userInfo = res.data.user;
         _this.setData({
             userInfo: res.data.user,
             isbind: res.data.user.userPhone,

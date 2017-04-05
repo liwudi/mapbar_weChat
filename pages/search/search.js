@@ -166,7 +166,6 @@ Page({
     let data=data1+data2+data3;
     
     if(data){
-      
       let array = this.data.historyRecordList;
       if(!array.includes(data)){
         array.unshift(data);

@@ -84,10 +84,7 @@ function getUserId(code, avatarUrl, nickName){
             userimg:avatarUrl,
             username:nickName,
         }
-    ).then(res => {
-        res.data.user.maxDistance = res.data.user.maxDistance.toFixed(2);
-        res.data.user.totalDistance = res.data.user.totalDistance.toFixed(2);
-        console.log(`set--userInfo`,res);
+    ).then(res => {  
         setUserInfo(res.data.user);
         return res;
     })
@@ -102,8 +99,7 @@ function getGroupList(){
             userimg: userInfo.userImg,
         }
     ).then(res => {
-        console.log(res);
-        console.log(`set--userInfo`,res);
+        
         setUserInfo(res.data.user);
         return res;
     })
@@ -165,17 +161,20 @@ function upLoadLonlat(data){
     )
 }
 
-//获取城市code
+//获取城市code相关
 
 let cityCode = {
     time: ``,
     code: ``,
+    currentCity: ``,
 }
 
 function getCityCode(){
     let now = new Date().getTime();
     if(cityCode.time &&  (now - cityCode.time < 600*1000)){
-        return cityCode;
+        return new Promise((resolve,reject) => {
+            resolve(cityCode);
+        })
     }else{
         return WxService.getLocation().then(res => {
         
@@ -184,14 +183,42 @@ function getCityCode(){
                 {}
             )
         }).then(res => {
+            console.log(`cityCode接口返回`,res);
             cityCode.time = now;
             cityCode.code = res.data.province.code;
+            cityCode.currentCity = res.data.city.value;
             return cityCode;
         })
     }
     
 }
 
+
+//search相关\
+
+function commonSearch(keywords,location,city,page_num){
+    return BaseService.get(
+        `https://w.mapbar.com/search2015/search`,
+        {
+            keywords,
+            location,
+            city,
+            page_num
+        }
+    )
+}
+
+function keywordsSearch(keywords,location,city,page_num) {
+    return BaseService.get(
+        `https://w.mapbar.com/search2015/search/keywords`,
+        {
+            keywords,
+            location,
+            city,
+            page_num
+        }
+    )
+}
 
 function suggestSearch(keywords,cityCode){
     return BaseService.get(
@@ -203,6 +230,37 @@ function suggestSearch(keywords,cityCode){
     )
 }
 
+function aroundSearch(keywords,location,city,page_num){
+    return BaseService.get(
+        `https://w.mapbar.com/search2015/search/around`,
+        {
+            keywords,
+            location,
+            city,
+            page_num
+        }
+    )
+}
+
+//群组跟新相关
+
+function createGroup(userid,groupname,lon,lat,destname){
+    
+    BaseService.get(
+        `${Config.main_url}/wxGroup/createGroup.json`,
+        {
+            userid,
+            groupname,
+            lon,
+            lat,
+            destname
+        }
+    ).then(res => {
+        
+        wx.hideToast();
+        WxService.redirectTo(`../destination/destination?groupId=${res.data.groupid}&isGroupHost=true&lat=${lat}&lon=${lon}`);
+    })
+}
 
 function exitTheGroup(userId,groupId){
     BaseService.get(
@@ -213,7 +271,7 @@ function exitTheGroup(userId,groupId){
         status:1
     }
     ).then(res => {
-    console.log(res);
+        console.log(res);
         wx.navigateBack({delta: 5});
         if(res.status == 200){
             
@@ -242,6 +300,32 @@ function changeGroupName(userId,groupId,groupname){
     });
 }
 
+
+
+//语音相关
+function voice_search(groupId,pageIndex){
+    return BaseService.get(
+        `${Config.voice_url}/voiceByGroup?groupid=${groupId}&pageSize=50&pageIndex=${pageIndex}`,
+        {}
+    )
+}
+
+function connectVoice(){
+    return BaseService.get(
+        `${Config.voice_url}/webSocketCode?userid=${userInfo.userId}`,
+        {}
+    ).then(res => {
+        console.log(`语音通道`,res);
+        let webSocketCode = res.data.data.message;
+        let i = 0;
+        WxService.connectSocket(webSocketCode,i);
+    })
+}
+function closeSocket(){
+    wx.closeSocket();
+}
+
+
 module.exports = {
     getUserId,
     getUserInfo,
@@ -252,7 +336,30 @@ module.exports = {
     upLoadPin,
     systemInfo,
     getCityCode,
+
     suggestSearch,
+    commonSearch,
+    keywordsSearch,
+    aroundSearch,
+
+    createGroup,
     exitTheGroup,
     changeGroupName,
+
+    voice_search,
+    connectVoice,
+    closeSocket,
+
 }
+
+
+
+
+
+/**
+ * @个人理解：1、作为一个服务，我们应该在它底层实现过期时间的验证。
+ * 2、http请求是最常见的服务，在一个项目中，service目录之外不应该出现接口地址。
+ * 3、config.js一般作为一个全局配置而存在，里面的东西通常是不变的，可以配置域名，文件目录等等。
+ * 4、服务的目录应该清晰，AppService应该是和接口相关的服务，而WxService应该是微信自己提供的api接口的封装，BaseService应该只提供基本的get和post请求。
+ * 
+ */

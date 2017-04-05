@@ -18,5 +18,6 @@ App({
     },
     globalData: {
         isInit:false,
+        userInfo: {},
     }
 });

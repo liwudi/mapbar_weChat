@@ -1,2 +1,30 @@
 <!--pages/watchMap/watchMap.wxml-->
-<text>pages/watchMap/watchMap.wxml</text>
+
+<map id="map" longitude="{{longitude}}" latitude="{{latitude}}" markers="{{markers}}" include-points="{{include_markers}}" controls="{{controls}}" bindcontroltap="controlsEvent"  bindmarkertap="markertap" show-location></map>
+
+<swiper circular="{{true}}" class="place-info" bindchange="changeEvent" current="{{index}}" autoplay="{{false}}" wx:if="{{true}}">
+    <block wx:for="{{list}}">
+        <swiper-item>
+            <view class="">
+                <view class="point-info">
+                    <text class="point-title">{{item.title}}</text>
+                    <text class="point-content">{{item.distance}}·{{item.content}}</text>
+                </view>
+                <view class="set-position" bindtap="destinationEvent">
+                    <image class="set-destination-image" src="../resouces/myicon/end.png"></image>
+                    <text class="watchMap-text">设终点</text>
+                </view>
+            </view>
+        </swiper-item>
+    </block>
+</swiper>
+<view class="place-info" wx:if="{{false}}">
+    <view class="point-info">
+        <text class="point-title">{{title}}</text>
+        <text class="point-content">{{distance}}·{{content}}</text>
+    </view>
+    <view class="set-position" bindtap="destinationEvent">
+        <image class="set-destination-image" src="../resouces/myicon/end.png"></image>
+        <text class="watchMap-text">设终点</text>
+    </view>
+</view>

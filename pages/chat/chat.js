@@ -1,27 +1,34 @@
-var data = [];
-var socketOpen = false;
-var startTime;
-var endTime;
-var common = require('../../utils/util.js');
-const app = getApp();
-let config = require(`../../utils/config`);
-let service = require(`../../utils/service`);
 
-let tagList;
+const app = getApp();
+
+const WxService = require(`../../service/WxService`);
+
+const AppService = require(`../../service/AppService`);
+
+const common = require(`../../utils/util`);
+
+let tagList;//标识的是是否已读。
+
+
+
+let data = [];
+
+
+
+
+
+
 
 Page({
   data: {
-    userId:"",
-    userInfo:null,
-    groupId:"",
+    userId: ``,
+    userInfo: null,
+    groupId: ``,
     //chat列表相关数据
     chatList:[],
-    socketMsgQueue:[],
     tempFilePath:"",//记录自己每次说话的语音地址
     timer:0,
     time:'',
-    startTime:'',
-    endTime:"",
     pageIndex:1,
   },
   /**
@@ -29,150 +36,139 @@ Page({
    * 作用：初始化聊天数据列表，并且建立socket连接。
    */
   onLoad:function(options){
-  
+    console.log(`chatList options`,options.groupId);
+    let _this=this;
     if(!tagList){
       tagList = [];
     }
-    
-    var _this=this;
     _this.msgArray = [];
-    data=[];
-    this.setData({
-      chatList:data,
+
+    _this.setData({
+      chatList: [],
       groupId:options.groupId
     });
-    service.getUserInfo().then(res => {
-      
+
+    AppService.getUserInfo().then(res => {
       _this.setData({
-        userInfo:res.userInfo,
-        userId:res.user.userId,
+          userInfo:res.data.user,
+          userId:res.data.user.userId,
       });
-
-      if(res.user.openStatus==null){
-        _this.setData({
-          isFirst:false
-        });
-      }
-
-      return service.get(
-        `${app.globalData.voice_url}/voiceByGroup?groupid=${options.groupId}&pageSize=50&pageIndex=${_this.data.pageIndex}`,
-        {}
-      )
+      return AppService.voice_search(options.groupId,_this.data.pageIndex);
     }).then(res => {
       console.log(`getInitailData`,res);
-      var voice_array=res.data.reverse();
-        
-      var voice_length=res.data.length;
-      if(voice_length){
-        
-        var length=options.voice_number;//这个代表options.voice_length;
-        if(voice_array.length>length){
-          for(var i=0;i<voice_array.length;i++){
-            //这里对每一条数据进行加工
-            var len=data.length;
-            var content=voice_array[i];
-            var this_time=content.uptime;
-            
-            if(data[len-1]){//如果data数组中的最后一个数据存在
-              
-              if(this_time-data[len-1].time<=60000){//当前时间与最后一个时间作比较如果小于60秒
-                content.avatarUrl=content.userimg||"../resouces/myicon/userImg.png";
-                content.nickName=content.username||"";
-                content.voiceLenth=content.timelong+'"'||'';
-                if(_this.data.userId==content.userid){
-                  content.tag=0;
-                }else{
-                  content.tag=1;
-                  if(tagList.includes(this_time)){
-                    content.tag=0;
-                  }
-                }
-                if(content.userid==_this.data.userId){
-                  content.isMe=1;
-                  content.hronUrl="../resouces/myicon/white_hornc.png";
-                }else{
-                  content.isMe=0;
-                  content.hronUrl="../resouces/myicon/black_hornc.png";
-                }
-                data[len-1].userInfo.push(content);
-              }else{
-                var obj=new Object();
-                obj.time=this_time;
-                obj.times=common.getNowDate(this_time);
-                obj.userInfo=[];
-                content.avatarUrl=content.userimg||"../resouces/myicon/userImg.png";
-                content.nickName=content.username||"用户名";
-                content.voiceLenth=content.timelong+'"'||'';
-                if(_this.data.userId==content.userid){
-                  content.tag=0;
-                }else{
-                  content.tag=1;
-                  if(tagList.includes(this_time)){
-                    content.tag=0;
-                  }
-                }
-                if(content.userid==_this.data.userId){
-                  content.isMe=1;
-                  content.hronUrl="../resouces/myicon/white_hornc.png";
-                }else{
-                  content.isMe=0;
-                  content.hronUrl="../resouces/myicon/black_hornc.png";
-                }
-                obj.userInfo.push(content);
-                data.push(obj);
-              }
-            }else{
-              
-              var obj=new Object();
-              obj.time=this_time;
-              obj.times=common.getNowDate(this_time);
-              obj.userInfo=[];
-              content.avatarUrl=content.userimg||"../resouces/myicon/userImg.png";
-              content.nickName=content.username||"";
-              content.voiceLenth=content.timelong+'"'||'';
-              if(_this.data.userId==content.userid){
-                  content.tag=0;
-                }else{
-                  content.tag=1;
-                  if(tagList.includes(this_time)){
-                    content.tag=0;
-                  }
-                }
-              if(content.userid==_this.data.userId){
-                content.isMe=1;
-                content.hronUrl="../resouces/myicon/white_hornc.png";
-              }else{
-                content.isMe=0;
-                content.hronUrl="../resouces/myicon/black_hornc.png";
-              }
-              obj.userInfo.push(content);
-              data.push(obj);
-            }
-            
-            _this.setData({
-              chatList:data,
-              
-            }); 
+      //获取到了一个语音的数组，通过遍历来进行数据处理。
+      _this.dealVoiceArray(res);
 
-          }
-
-        }
-      }
     })
   },
+  dealVoiceArray: function(res) {
+    let _this = this;
+    
+    let voice_array = res.data.data.reverse();
+    for(let i=0;i<voice_array.length;i++){
+            //这里对每一条数据进行加工
+      let len=data.length;
+      let content=voice_array[i];
+      let this_time=content.uptime;
+      
+      if(data[len-1]){//如果data数组中的最后一个数据存在
+        
+        if(this_time-data[len-1].time<=60000){//当前时间与最后一个时间作比较如果小于60秒
+          content.avatarUrl=content.userimg||"../resouces/myicon/userImg.png";
+          content.nickName=content.username||"";
+          content.voiceLenth=content.timelong+'"'||'';
+          if(_this.data.userId==content.userid){
+            content.tag=0;
+          }else{
+            content.tag=1;
+            if(tagList.includes(this_time)){
+              content.tag=0;
+            }
+          }
+          if(content.userid==_this.data.userId){
+            content.isMe=1;
+            content.hronUrl="../resouces/myicon/white_hornc.png";
+          }else{
+            content.isMe=0;
+            content.hronUrl="../resouces/myicon/black_hornc.png";
+          }
+          data[len-1].userInfo.push(content);
+        }else{
+          let obj=new Object();
+          obj.time=this_time;
+          obj.times=common.getNowDate(this_time);
+          obj.userInfo=[];
+          content.avatarUrl=content.userimg||"../resouces/myicon/userImg.png";
+          content.nickName=content.username||"用户名";
+          content.voiceLenth=content.timelong+'"'||'';
+          if(_this.data.userId==content.userid){
+            content.tag=0;
+          }else{
+            content.tag=1;
+            if(tagList.includes(this_time)){
+              content.tag=0;
+            }
+          }
+          if(content.userid==_this.data.userId){
+            content.isMe=1;
+            content.hronUrl="../resouces/myicon/white_hornc.png";
+          }else{
+            content.isMe=0;
+            content.hronUrl="../resouces/myicon/black_hornc.png";
+          }
+          obj.userInfo.push(content);
+          data.push(obj);
+        }
+      }else{
+        
+        let obj=new Object();
+        obj.time=this_time;
+        obj.times=common.getNowDate(this_time);
+        obj.userInfo=[];
+        content.avatarUrl=content.userimg||"../resouces/myicon/userImg.png";
+        content.nickName=content.username||"";
+        content.voiceLenth=content.timelong+'"'||'';
+        if(_this.data.userId==content.userid){
+            content.tag=0;
+          }else{
+            content.tag=1;
+            if(tagList.includes(this_time)){
+              content.tag=0;
+            }
+          }
+        if(content.userid==_this.data.userId){
+          content.isMe=1;
+          content.hronUrl="../resouces/myicon/white_hornc.png";
+        }else{
+          content.isMe=0;
+          content.hronUrl="../resouces/myicon/black_hornc.png";
+        }
+        obj.userInfo.push(content);
+        data.push(obj);
+      }
+      
+      _this.setData({
+        chatList:data,
+        
+      }); 
+
+    }
+  },
+  
   onReady: function (e) {
     
   },
   
   onShow:function(){
-    var _this=this;
+    let _this=this;
     
     onmessage();
     function onmessage(){
+      console.log(`执行了onmessage`);
       wx.onSocketMessage(function(res){
         console.log(`getSocketMessage`,res);
 
-        var content = JSON.parse(res.data);
+        let content = JSON.parse(res.data);
       
 
         if(content.status==200){
@@ -198,8 +194,6 @@ Page({
       });
     }
   },
-
-
 
   
   downLoad_playVoice: function(){
@@ -233,18 +227,10 @@ Page({
     }
   },
 
-
-
-
-
-
-
-
-
   dealOnMessageData: function(dealData){
-    var this_time=dealData.uptime;
+    let this_time=dealData.uptime;
 
-    var len=data.length;
+    let len=data.length;
     let _this = this;
     if(data[len-1]){
       if(this_time-data[len-1].time<=60000){
@@ -265,7 +251,7 @@ Page({
         }
         data[len-1].userInfo.push(dealData);
       }else{
-        var obj=new Object();
+        let obj=new Object();
         obj.time=this_time;
         obj.times=common.getNowDate(this_time);
         obj.userInfo=[];
@@ -288,7 +274,7 @@ Page({
         data.push(obj);
       }
     }else{
-      var obj=new Object();
+      let obj=new Object();
       obj.time=this_time;
       obj.times=common.getNowDate(this_time);
       obj.userInfo=[];
@@ -321,48 +307,34 @@ Page({
   /**
    * 点击录音并且上传
    */
-  touchStartEvent:function(){
-    var _this=this;
-    startTime=new Date().getSeconds();
-    console.log("touchStart");
-    wx.startRecord({
-      success: function(res) {
-        console.log("录音了！")
-        var tempFilePath = res.tempFilePath;//返回的一个录音地址
-        _this.setData({
-          tempFilePath:tempFilePath
-        });
-        wx.saveFile({
-          tempFilePath: _this.data.tempFilePath,
-          success: function(res){
-            console.log("saved");
-            var time=((endTime-startTime)>=0)?(endTime-startTime):(60-startTime+endTime);
-            var savedFilePath = res.savedFilePath;
-            wx.uploadFile({
-              url: app.globalData.voice_url+'/voiceUp',//上传语音文件的服务器地址
-              filePath: savedFilePath,
-              name:'content',
-              // header: {}, // 设置请求的 header
-              formData: {
-                userid: _this.data.userId,
-                groupid:_this.data.groupId,
-                timelong: time
-              }, 
-              success: function(res){
-                console.log("上传语音成功");
-              }
-            });
-          }
-        });     
+    touchStartEvent: function() {
+    let _this = this;
+
+    _this.startTime = new Date().getSeconds();
+    WxService.startRecord().then(res => {
+      console.log(res)
+      let tempFilePath = res.tempFilePath;
+
+      return WxService.saveFile(tempFilePath);
+    }).then(res => {
+      console.log(`saveFile`,res);
+      let savedFilePath = res.savedFilePath;
+      let userid =  _this.data.userId;
+      let groupid = _this.data.groupId;
+      let timelong = ((_this.endTime-_this.startTime)>=0)?(_this.endTime-_this.startTime):(60-_this.startTime+_this.endTime);
+      if(timelong == 0){
+        timelong = 1
       }
-    });
+      WxService.upLoadFile(savedFilePath,userid,groupid,timelong);
+    })
+
   },
-  touchEndEvent:function(){
-    var _this=this;
+  touchEndEvent: function() {
+    let _this=this;
     wx.stopRecord();
-    endTime=new Date().getSeconds();
-    console.log("end");
+    _this.endTime = new Date().getSeconds();
   },
+
   touchCancelEvent:function(){
     wx.stopRecord();
   },
@@ -370,115 +342,140 @@ Page({
    * 函数名：tapNotMeEvent
    * 作用：点击进行播放语音。
    */
-  tapNotMeEvent:function(res){
-    // console.log(res);
-    var _this=this;
-    clearTimeout(_this.voice_timer);
+  // tapNotMeEvent:function(res){
+  //   // console.log(res);
+  //   let _this=this;
+  //   clearTimeout(_this.voice_timer);
     
-    _this.msgArray = []
-    var index = res.target.dataset.id;
-    var index1,index2;
+  //   _this.msgArray = []
+  //   let index = res.target.dataset.id;
+  //   let index1,index2;
+  //   if(index){
+  //     index1 = index.split(".")[0];
+  //     index2 = index.split(".")[1];
+  //     _this.data.chatList[index1].userInfo[index2].tag = 0;
+  //     data[index1].userInfo[index2].tag = 0;
+  //   }else{
+  //     return;
+  //   }
+  //   _this.setData({
+  //     chatList:_this.data.chatList
+  //   });
+  //   for(let i=0;i<_this.data.chatList.length;i++){
+  //     for(let j=0;j<_this.data.chatList[i].userInfo.length;j++){
+  //       if(_this.data.chatList[i].userInfo[j].isMe){
+  //         _this.data.chatList[i].userInfo[j].hronUrl="../resouces/myicon/white_hornc.png";
+  //         data[i].userInfo[j].hronUrl="../resouces/myicon/white_hornc.png";
+  //       }else{
+  //         _this.data.chatList[i].userInfo[j].hronUrl="../resouces/myicon/black_hornc.png";
+  //         data[i].userInfo[j].hronUrl="../resouces/myicon/black_hornc.png";
+  //       }
+  //     }
+  //   }
+  //   //进行audio音频播放，第一步，根据data中的id获取音频地址，然后放在audio中播放
+  //   let audio_id=_this.data.chatList[index1].userInfo[index2].id;
+  //   WxService.downloadFile(audio_id).then(res => {
+  //     console.log(res);
+  //     wx.playVoice({
+  //       filePath: res.tempFilePath
+  //     });
+  //   });   
+  //   tagList.push(_this.data.chatList[index1].userInfo[index2].uptime);
+  //   _this.setData({
+  //     chatList:_this.data.chatList
+  //   });
+  //   clearInterval(this.data.timer);
+  //   let i=0;
+  //   let tag="a";
+    
+  //   let time=parseInt(this.data.chatList[index1].userInfo[index2].voiceLenth);
+  //   this.data.timer=setInterval(function(){
+  //     i++;
+  //     time-=0.5;
+  //     if(i%3==1){
+  //       tag='a';
+  //     }else if(i%3==2){
+  //       tag="b";
+  //     }else{
+  //       tag='c';
+  //     }
+  //     _this.data.chatList[index1].userInfo[index2].hronUrl="../resouces/myicon/black_horn"+tag+".png";
+  //     data[index1].userInfo[index2].hronUrl="../resouces/myicon/black_horn"+tag+".png";
+  //     _this.setData({
+  //       chatList:_this.data.chatList
+  //     });
+  //     if(time<=0){
+  //       clearInterval(_this.data.timer);
+  //       _this.data.chatList[index1].userInfo[index2].hronUrl="../resouces/myicon/black_hornc.png";
+  //       data[index1].userInfo[index2].hronUrl="../resouces/myicon/black_hornc.png";
+  //       _this.setData({
+  //         chatList:_this.data.chatList
+  //       });
+  //     }
+  //   },500);
+  // },
+  tapNotMeEvent: function (res) {
+    let _this = this;
+
+    let index = res.target.dataset.id;
+    let index1,index2;
+    index && (index1 = index.split(".")[0]);
+    index && (index2 = index.split(".")[1]);
+    
     if(index){
-      index1 = index.split(".")[0];
-      index2 = index.split(".")[1];
-      _this.data.chatList[index1].userInfo[index2].tag = 0;
-      data[index1].userInfo[index2].tag = 0;
+      _this.data.chatList[index1].userInfo[index2].tag = 0
     }else{
-      return;
+      return
     }
+    _this.data.chatList[index1].userInfo[index2].tag = 0
     _this.setData({
       chatList:_this.data.chatList
-    });
-    for(var i=0;i<_this.data.chatList.length;i++){
-      for(var j=0;j<_this.data.chatList[i].userInfo.length;j++){
-        if(_this.data.chatList[i].userInfo[j].isMe){
-          _this.data.chatList[i].userInfo[j].hronUrl="../resouces/myicon/white_hornc.png";
-          data[i].userInfo[j].hronUrl="../resouces/myicon/white_hornc.png";
-        }else{
-          _this.data.chatList[i].userInfo[j].hronUrl="../resouces/myicon/black_hornc.png";
-          data[i].userInfo[j].hronUrl="../resouces/myicon/black_hornc.png";
-        }
-      }
-    }
-    //进行audio音频播放，第一步，根据data中的id获取音频地址，然后放在audio中播放
-    var audio_id=_this.data.chatList[index1].userInfo[index2].id;
-    console.log(`time`,_this.data.chatList[index1].userInfo[index2].uptime);
-    tagList.push(_this.data.chatList[index1].userInfo[index2].uptime);
-    wx.downloadFile({
-      url: app.globalData.voice_url+'/voiceById?id='+audio_id, 
-      success: function(res){
-        wx.playVoice({
-          filePath: res.tempFilePath
-        });
-      }
-    });
-    _this.setData({
-      chatList:_this.data.chatList
-    });
-    clearInterval(this.data.timer);
-    var i=0;
-    var tag="a";
-    var _this=this;
-    var time=parseInt(this.data.chatList[index1].userInfo[index2].voiceLenth);
-    this.data.timer=setInterval(function(){
-      i++;
-      time-=0.5;
-      if(i%3==1){
-        tag='a';
-      }else if(i%3==2){
-        tag="b";
-      }else{
-        tag='c';
-      }
-      _this.data.chatList[index1].userInfo[index2].hronUrl="../resouces/myicon/black_horn"+tag+".png";
-      data[index1].userInfo[index2].hronUrl="../resouces/myicon/black_horn"+tag+".png";
-      _this.setData({
-        chatList:_this.data.chatList
+    })
+
+    let audio_id=_this.data.chatList[index1].userInfo[index2].id;
+    WxService.downloadFile(audio_id).then(res => {
+      console.log(res);
+      wx.playVoice({
+        filePath: res.tempFilePath
       });
-      if(time<=0){
-        clearInterval(_this.data.timer);
-        _this.data.chatList[index1].userInfo[index2].hronUrl="../resouces/myicon/black_hornc.png";
-        data[index1].userInfo[index2].hronUrl="../resouces/myicon/black_hornc.png";
-        _this.setData({
-          chatList:_this.data.chatList
-        });
-      }
-    },500);
+    });
+
+    //处理图片动态效果
+    _this.dealImage(index1,index2);
   },
+  tapMeEvent: function(res) {
+    let _this = this;
 
-
-  tapMeEvent:function(res){
-    var _this=this;
-    clearTimeout(_this.voice_timer);
-    _this.msgArray = []
+    let index = res.target.dataset.id;
+    let index1,index2;
+    index && (index1 = index.split(".")[0]);
+    index && (index2 = index.split(".")[1]);
     
-    console.log(res.target.dataset.id);
-    var index = res.target.dataset.id;
-    var index1,index2;
-    if(index){
-      index1 = index.split(".")[0];
-      index2 = index.split(".")[1];
-      data[index1].userInfo[index2].tag = 0
-      _this.data.chatList[index1].userInfo[index2].tag = 0;//tag标记已读！
-      data[index1].userInfo[index2].tag = 0;
+    if(index1 && index2){
+      _this.data.chatList[index1].userInfo[index2].tag = 0
     }else{
-      return;
+      return
     }
+    _this.data.chatList[index1].userInfo[index2].tag = 0
     _this.setData({
       chatList:_this.data.chatList
+    })
+
+    let audio_id=_this.data.chatList[index1].userInfo[index2].id;
+    WxService.downloadFile(audio_id).then(res => {
+      console.log(res);
+      wx.playVoice({
+        filePath: res.tempFilePath
+      });
     });
-    var audio_id=_this.data.chatList[index1].userInfo[index2].id;
-    console.log("我的audio_id",audio_id);
-    wx.downloadFile({
-      url: app.globalData.voice_url+'/voiceById?id='+audio_id, 
-      success: function(res) {
-        wx.playVoice({
-          filePath: res.tempFilePath
-        });
-      }
-    });
-    for(var i=0;i<_this.data.chatList.length;i++){
-      for(var j=0;j<_this.data.chatList[i].userInfo.length;j++){
+
+    //处理图片动态效果
+    _this.dealImage(index1,index2);
+  },
+  dealImage: function(index1,index2){
+    let _this = this;
+    for(let i=0;i<_this.data.chatList.length;i++){
+      for(let j=0;j<_this.data.chatList[i].userInfo.length;j++){
         if(_this.data.chatList[i].userInfo[j].isMe){
           _this.data.chatList[i].userInfo[j].hronUrl="../resouces/myicon/white_hornc.png";
           data[i].userInfo[j].hronUrl="../resouces/myicon/white_hornc.png"
@@ -492,13 +489,12 @@ Page({
       chatList:_this.data.chatList
     });
     clearInterval(_this.data.timer);
+    let i=0;
+    let tag="a";
     
-    var i=0;
-    var tag="a";
-    var _this=this;
 
-    var time=parseInt(this.data.chatList[index1].userInfo[index2].voiceLenth);
-    _this.data.timer=setInterval(function(){
+    let time = parseInt(_this.data.chatList[index1].userInfo[index2].voiceLenth);
+    _this.data.timer = setInterval(function(){
       i++;
       time-=0.5;
       if(i%3==1){
@@ -509,18 +505,35 @@ Page({
         tag='c';
       }
       console.log(tag);
-      _this.data.chatList[index1].userInfo[index2].hronUrl="../resouces/myicon/white_horn"+tag+".png";
-      data[index1].userInfo[index2].hronUrl="../resouces/myicon/white_horn"+tag+".png";
-      _this.setData({
-        chatList:_this.data.chatList
-      });
-      if(time<=0){
-        clearInterval(_this.data.timer);
-        _this.data.chatList[index1].userInfo[index2].hronUrl="../resouces/myicon/white_hornc.png";
-        data[index1].userInfo[index2].hronUrl="../resouces/myicon/white_hornc.png";
+      if(_this.data.chatList[index1].userInfo[index2].isMe){
+        
+        _this.data.chatList[index1].userInfo[index2].hronUrl="../resouces/myicon/white_horn"+tag+".png";
+
         _this.setData({
           chatList:_this.data.chatList
         });
+        if(time<=0){
+          clearInterval(_this.data.timer);
+          _this.data.chatList[index1].userInfo[index2].hronUrl="../resouces/myicon/white_hornc.png";
+        
+          _this.setData({
+            chatList:_this.data.chatList
+          });
+        }
+      }else{
+        _this.data.chatList[index1].userInfo[index2].hronUrl="../resouces/myicon/black_horn"+tag+".png";
+        
+        _this.setData({
+          chatList:_this.data.chatList
+        });
+        if(time<=0){
+          clearInterval(_this.data.timer);
+          _this.data.chatList[index1].userInfo[index2].hronUrl="../resouces/myicon/black_hornc.png";
+          
+          _this.setData({
+            chatList:_this.data.chatList
+          });
+        }
       }
     },500);
   }
