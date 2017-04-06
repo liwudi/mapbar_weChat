@@ -39,14 +39,14 @@ if(!!userInfo){
 
 function setUserInfo(userInfo){
     wx.setStorageSync('userInfo',userInfo)
-    console.log(`set之后的_userInfo`,userInfo)
+    
 }
 
 function getUserInfo(){
     return WxService.wxCheckSession().then(() => {
         if(userInfo&&userId&&userName&&userImg){
             console.log(`再次通道`);
-            console.log(getGroupList());
+            
             return getGroupList()
         }else{
             return WxService.wxLogin().then((res) => {
@@ -63,7 +63,7 @@ function getUserInfo(){
         }
     }).catch(() => {
         console.log(`catch通道`);
-        WxService.wxLogin().then((res) => {
+        return WxService.wxLogin().then((res) => {
             
             return WxService.wxUserInfo().then((data) => {
                 console.log(data);

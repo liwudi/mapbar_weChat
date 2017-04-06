@@ -11,12 +11,7 @@ let tagList;//标识的是是否已读。
 
 
 
-let data = [];
-
-
-
-
-
+let data = [];//存放拉取下来的数据，以及onmessage接受的数据。
 
 
 Page({
@@ -66,92 +61,7 @@ Page({
     
     let voice_array = res.data.data.reverse();
     for(let i=0;i<voice_array.length;i++){
-            //这里对每一条数据进行加工
-      let len=data.length;
-      let content=voice_array[i];
-      let this_time=content.uptime;
-      
-      if(data[len-1]){//如果data数组中的最后一个数据存在
-        
-        if(this_time-data[len-1].time<=60000){//当前时间与最后一个时间作比较如果小于60秒
-          content.avatarUrl=content.userimg||"../resouces/myicon/userImg.png";
-          content.nickName=content.username||"";
-          content.voiceLenth=content.timelong+'"'||'';
-          if(_this.data.userId==content.userid){
-            content.tag=0;
-          }else{
-            content.tag=1;
-            if(tagList.includes(this_time)){
-              content.tag=0;
-            }
-          }
-          if(content.userid==_this.data.userId){
-            content.isMe=1;
-            content.hronUrl="../resouces/myicon/white_hornc.png";
-          }else{
-            content.isMe=0;
-            content.hronUrl="../resouces/myicon/black_hornc.png";
-          }
-          data[len-1].userInfo.push(content);
-        }else{
-          let obj=new Object();
-          obj.time=this_time;
-          obj.times=common.getNowDate(this_time);
-          obj.userInfo=[];
-          content.avatarUrl=content.userimg||"../resouces/myicon/userImg.png";
-          content.nickName=content.username||"用户名";
-          content.voiceLenth=content.timelong+'"'||'';
-          if(_this.data.userId==content.userid){
-            content.tag=0;
-          }else{
-            content.tag=1;
-            if(tagList.includes(this_time)){
-              content.tag=0;
-            }
-          }
-          if(content.userid==_this.data.userId){
-            content.isMe=1;
-            content.hronUrl="../resouces/myicon/white_hornc.png";
-          }else{
-            content.isMe=0;
-            content.hronUrl="../resouces/myicon/black_hornc.png";
-          }
-          obj.userInfo.push(content);
-          data.push(obj);
-        }
-      }else{
-        
-        let obj=new Object();
-        obj.time=this_time;
-        obj.times=common.getNowDate(this_time);
-        obj.userInfo=[];
-        content.avatarUrl=content.userimg||"../resouces/myicon/userImg.png";
-        content.nickName=content.username||"";
-        content.voiceLenth=content.timelong+'"'||'';
-        if(_this.data.userId==content.userid){
-            content.tag=0;
-          }else{
-            content.tag=1;
-            if(tagList.includes(this_time)){
-              content.tag=0;
-            }
-          }
-        if(content.userid==_this.data.userId){
-          content.isMe=1;
-          content.hronUrl="../resouces/myicon/white_hornc.png";
-        }else{
-          content.isMe=0;
-          content.hronUrl="../resouces/myicon/black_hornc.png";
-        }
-        obj.userInfo.push(content);
-        data.push(obj);
-      }
-      
-      _this.setData({
-        chatList:data,
-        
-      }); 
-
+      _this.dealItemData(voice_array[i])
     }
   },
   
@@ -161,41 +71,93 @@ Page({
   
   onShow:function(){
     let _this=this;
-    
-    onmessage();
-    function onmessage(){
-      console.log(`执行了onmessage`);
-      wx.onSocketMessage(function(res){
-        console.log(`getSocketMessage`,res);
+    _this.onmessage();
 
-        let content = JSON.parse(res.data);
-      
-
-        if(content.status==200){
-            console.log(content);
-            
-            
-            let dealData = content.data;
-
-            
-
-            if(content.data.userid != _this.data.userId){
-              _this.msgArray.push(content);
-            }
-            if(app.globalData.isAutoPlay){
-              (!_this.isplaying) && _this.downLoad_playVoice();
-            }else{
-              _this.msgArray = []
-            }
-            
-            _this.dealOnMessageData(dealData);
-            
-        }
-      });
-    }
   },
+  onmessage: function(){
+    let _this = this;
+    wx.onSocketMessage(function(res) {
+      let content = JSON.parse(res.data);
+      if(content.status == 200){
+        console.log(content);
+        let item = content.data;
 
-  
+        //语音播放，过滤自己。
+        if(content.data.userid != _this.data.userId){
+          _this.msgArray.push(content);
+        }
+        if(app.globalData.isAutoPlay){
+          (!_this.isplaying) && _this.downLoad_playVoice();
+        }else{
+          _this.msgArray = [];
+        }
+
+        //接受到的数据进行处理
+        _this.dealItemData(item);
+      }
+    });
+  },
+  /**
+  * 处理数据
+  * 把对象push到一个新的数组上chatList
+  * @param item - Object {groupid,id,timelong,uptime,userid,userimg,username}
+  */
+  dealItemData: function(item){
+    let _this = this;
+    let theTime = item.uptime;
+    let len = data.length;
+    
+    let dealData = () => {
+
+      item.avatarUrl = item.userimg;
+      item.nickName = item.username;
+      item.voiceLenth = item.timelong+'"'||'';
+      if(_this.data.userId == item.userid){
+        item.tag = 0;
+      }else{
+        item.tag = 1;
+      }
+      if(item.userid == _this.data.userId){
+        item.isMe = 1;
+        item.hronUrl = "../resouces/myicon/white_hornc.png";
+      }else{
+        item.isMe = 0;
+        item.hronUrl = "../resouces/myicon/black_hornc.png";
+      }
+      data[len-1].userInfo.push(item);
+    }
+
+    let dealArray = () => {
+      let obj = new Object();
+      obj.time = item.uptime;
+      obj.times = common.getNowDate(item.uptime);
+      obj.userInfo = [];
+      item.avatarUrl = item.userimg;
+      item.nickName = item.username;
+      item.voiceLenth = item.timelong+'"'||'';
+      if(_this.data.userId == item.userid){
+        item.tag = 0;
+      }else{
+        item.tag = 1;
+      }
+      if(item.userid == _this.data.userId){
+        item.isMe = 1;
+        item.hronUrl = "../resouces/myicon/white_hornc.png";
+      }else{
+        item.isMe = 0;
+        item.hronUrl = "../resouces/myicon/black_hornc.png";
+      }
+      obj.userInfo.push(item);
+      data.push(obj);
+    }
+    (len == 0 || theTime - data[len - 1].time > 60000) && dealArray();
+
+    !(len == 0 || theTime - data[len - 1].time > 60000) && dealData();
+
+    _this.setData({
+      chatList:data
+    })
+  },
   downLoad_playVoice: function(){
     
     let _this = this;
@@ -205,7 +167,7 @@ Page({
       let content = _this.msgArray.shift();
       let audio_id = content.data.id;
       
-      service.downloadFile(content.data.id).then(res => {
+      WxService.downloadFile(content.data.id).then(res => {
          
           _this.isplaying = true;
           let playTime = (content.data.timelong + 1) * 1000 ;
@@ -218,7 +180,7 @@ Page({
             playTime = 2000;
           }
 
-          _this.voice_timer=setTimeout(function(){
+          _this.voice_timer = setTimeout(function(){
               _this.downLoad_playVoice();
           },playTime)
       })
@@ -227,79 +189,6 @@ Page({
     }
   },
 
-  dealOnMessageData: function(dealData){
-    let this_time=dealData.uptime;
-
-    let len=data.length;
-    let _this = this;
-    if(data[len-1]){
-      if(this_time-data[len-1].time<=60000){
-        dealData.avatarUrl = dealData.userimg||"../resouces/image/userImg.png";
-        dealData.nickName = dealData.username||"";
-        dealData.voiceLenth = dealData.timelong+'"'||'';
-        if(_this.data.userId== dealData.userid){
-          dealData.tag=0;
-        }else{
-          dealData.tag=1;
-        }
-        if(dealData.userid==_this.data.userId){
-          dealData.isMe=1;
-          dealData.hronUrl="../resouces/myicon/white_hornc.png";
-        }else{
-          dealData.isMe=0;
-          dealData.hronUrl="../resouces/myicon/black_hornc.png";
-        }
-        data[len-1].userInfo.push(dealData);
-      }else{
-        let obj=new Object();
-        obj.time=this_time;
-        obj.times=common.getNowDate(this_time);
-        obj.userInfo=[];
-        dealData.avatarUrl = dealData.userimg||"../resouces/image/userImg.png";
-        dealData.nickName = dealData.username||"用户名";
-        dealData.voiceLenth=dealData.timelong+'"'||'';
-        if(_this.data.userId == dealData.userid){
-          dealData.tag=0;
-        }else{
-          dealData.tag=1;
-        }
-        if(dealData.userid==_this.data.userId){
-          dealData.isMe=1;
-          dealData.hronUrl="../resouces/myicon/white_hornc.png";
-        }else{
-          dealData.isMe=0;
-          dealData.hronUrl="../resouces/myicon/black_hornc.png";
-        }
-        obj.userInfo.push(dealData);
-        data.push(obj);
-      }
-    }else{
-      let obj=new Object();
-      obj.time=this_time;
-      obj.times=common.getNowDate(this_time);
-      obj.userInfo=[];
-      dealData.avatarUrl=dealData.userimg||"../resouces/image/userImg.png";
-      dealData.nickName=dealData.username||"";
-      dealData.voiceLenth=dealData.timelong+'"'||'';
-      if(_this.data.userId==dealData.userid){
-          dealData.tag=0;
-        }else{
-          dealData.tag=1;
-        }
-      if(dealData.userid==_this.data.userId){
-        dealData.isMe=1;
-        dealData.hronUrl="../resouces/myicon/white_hornc.png";
-      }else{
-        dealData.isMe=0;
-        dealData.hronUrl="../resouces/myicon/black_hornc.png";
-      }
-      obj.userInfo.push(dealData);
-      data.push(obj);
-    }
-    _this.setData({
-      chatList:data
-    });
-  },
   onHide:function(){
     // 页面隐藏
 

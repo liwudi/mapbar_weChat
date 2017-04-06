@@ -191,6 +191,15 @@ let downloadFile = (audio_id) => {
     })
 }
 
+let onmessageSocket = () => {
+    return new Promise((resolve,reject) => {
+        wx.onSocketMessage(function(data) {
+            resolve(data);
+        })
+    })
+    
+}
+
 module.exports = {
     wxLogin,
     wxCheckSession,
@@ -204,7 +213,8 @@ module.exports = {
     saveFile,
 
     connectSocket,
-
+    onmessageSocket,
+    
     upLoadFile,
     downloadFile,
 }
