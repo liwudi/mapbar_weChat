@@ -51,7 +51,7 @@ Page({
     origin_lon:``,
     destlon:``,
     destlat:``,
-    pastTime:``,
+    
     //地图
     longitude:116.415079,
     latitude: 40.088899,
@@ -76,7 +76,7 @@ Page({
   onLoad:function(options){
     let _this = this;
     //options传递参数
-    console.log(options);
+    
     _this.setData({
       groupId: options.groupId,
       isGroupHost: options.isGroupHost,
@@ -84,22 +84,22 @@ Page({
       destlat: options.lat,
       controls: controlsArray,
     })
-    
+   
     options.isShare && AppService.getUserInfo().then((res) => {
-      console.log(`进入分享界面`)
+      
       if(res.statusCode == 200){
         isShare = true;
         _this.setData({
             userInfo: res.data.user,
             groupList: res.data.groupList,
         });
-        
+         _this.getUserList();
         return _this.getRoute();
       }
     }).then(res => {
-      console.log(`分享之后执行了上传坐标点`,res);
+      
       AppService.getUserInfo().then(res => {
-        console.log(`重新获取用户信息groupList`,res.data.groupList);
+        
         if(res.statusCode == 200){
           _this.setData({
             userInfo: res.data.user,
@@ -119,6 +119,7 @@ Page({
             groupList: res.data.groupList,
         });
       }
+       _this.getUserList();
       _this.dataDeal();
     }).catch(error => {
       console.log(error);
@@ -172,6 +173,56 @@ Page({
     clearInterval(_this.timer_10);
     clearInterval(_this.timer_60);
     wx.closeSocket();
+  },
+  /**
+   * 处理数据
+   * 直接通过群组id获取用户信息列表
+   * @param groupid-群id
+   */
+  getUserList: function(){
+    let _this = this;
+
+    AppService.getUsersList(_this.data.groupId,2).then(res => {
+
+      let users = res.data.data;
+      console.log(`current`,users);
+      users.map((item,i) => {
+        item.index = i;
+        item.avatar_url = `../resouces/voice/avatar_tag${i+1}.png`;
+      })
+
+      let mySelf = users.find(item => item.userId == _this.data.userInfo.userId);
+      console.log(`current   mySelf`,mySelf);
+      if(mySelf){
+        _this.setData({
+            mydistance: mySelf.distanceSurplus,
+            mytime: parseInt(mySelf.surplusTime / 60),
+            myspeed: parseInt(mySelf.speed),
+            my_tag_url: `../resouces/voice/avatar_tag${mySelf.index+1}.png`
+        });
+      }
+      
+
+      users = users.filter(item => item.userId != _this.data.userInfo.userId);
+      console.log(`current   users`,users);
+      if(users){
+        users.forEach((item, i) => {
+            item.updateTime = common.getNowDate(item.updateTime);
+            item.surplusTime = parseInt(item.surplusTime / 60);
+
+            if (item.speed) {
+                item.speed = parseInt(item.speed);
+            }
+            if (item.speed < 0) {
+                item.speed = 0;
+            }
+        });
+        _this.setData({
+            usersList: users
+        });
+      }
+      
+    })
   },
   dataDeal: function(){
     let _this = this;
@@ -363,7 +414,7 @@ Page({
               my_tag_url: `../resouces/voice/avatar_tag${mySelf.index+1}.png`
           });
           if (mySelf.isOver) {
-              WxService.navigateTo(`../successes/successes?groupId=${_this.data.groupId}&userId=${_this.data.userInfo.userId}&lat=${_this.data.my_lat}&lon=${_this.data.my_lon}&deslon=${_this.data.destlon}&deslat=${_this.data.destlat}&destination={_this.data.destination}&pastTime=${_this.data.pastTime}`,() => {
+              WxService.navigateTo(`../successes/successes?groupId=${_this.data.groupId}&userId=${_this.data.userInfo.userId}&lat=${_this.data.my_lat}&lon=${_this.data.my_lon}&deslon=${_this.data.destlon}&deslat=${_this.data.destlat}&destination=${_this.data.destination}`,() => {
                 clearInterval(_this.timer_10);
               });
           }
@@ -454,7 +505,7 @@ Page({
     function play(content, next){
       console.log('start playing ',content);
       _this.isPlaying = true;
-      service.downloadFile(content.data.id).then(res => {
+      WxService.downloadFile(content.data.id).then(res => {
         console.log(res);
         ceaterMarker(content);
 
@@ -560,47 +611,7 @@ Page({
     wx.stopRecord();
     _this.endTime = new Date().getSeconds();
   },
-  // touchStartEvent:function(){
-  //   let _this=this;
-  //   startTime=new Date().getSeconds();
-  //   console.log("toucheStart");
-  //   wx.startRecord({
-  //     success: function(res) {
-  //       let tempFilePath = res.tempFilePath;//返回的一个录音地址
-  //       _this.setData({
-  //         tempFilePath:tempFilePath
-  //       });
-  //       wx.saveFile({
-  //         tempFilePath: _this.data.tempFilePath,
-  //         success: function(res){
-  //           let time=((endTime-startTime)>=0)?(endTime-startTime):(60-startTime+endTime);
-  //           if(true){
-  //             let savedFilePath = res.savedFilePath;
-  //             wx.uploadFile({
-  //               url: app.globalData.voice_url+'/voiceUp',//上传语音文件的服务器地址
-  //               filePath: savedFilePath,
-  //               name:'content',
-  //               // header: {}, // 设置请求的 header
-  //               formData: {
-  //                 userid: _this.data.userId,
-  //                 groupid:_this.data.groupId,
-  //                 timelong: time
-  //               }, 
-  //               success: function(res){
-  //                 console.log("上传语音成功");
-  //               }
-  //             });
-  //           } 
-  //         }
-  //       });     
-  //     }
-  //   });
-  // },
-  // touchEndEvent:function(){
-  //   let _this=this;
-  //   wx.stopRecord();
-  //   endTime=new Date().getSeconds();
-  // },
+
   touchCancelEvent:function(){
     wx.stopRecord();
   },

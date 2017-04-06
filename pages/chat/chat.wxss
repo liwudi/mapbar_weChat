@@ -52,7 +52,7 @@ page{
     background-color: #ffffff;
     transform: rotate(45deg) translateY(-50%);
     position: absolute;
-    left: -10rpx;
+    left: -14rpx;
     top: 50%;
 }
 .not-me-box-cicle{
@@ -96,9 +96,10 @@ page{
     width: 20rpx;
     height: 20rpx;
     background-color: #3c78ff;
-    transform: rotate(45deg);
+    transform: rotate(45deg) translateY(-50%);
     position: absolute;
-    right: -10rpx;
+    right: 0;
+    top: 50%;
 }
 .me-box-cicle{
     position: absolute;

@@ -42,6 +42,8 @@ function setUserInfo(userInfo){
     
 }
 
+
+
 function getUserInfo(){
     return WxService.wxCheckSession().then(() => {
         if(userInfo&&userId&&userName&&userImg){
@@ -104,6 +106,15 @@ function getGroupList(){
         return res;
     })
 }
+
+function getUsersList(groupId,pram){
+    return BaseService.get(
+        `${Config.main_url}/wxGroup/searchTrip.json?groupid=${groupId}&isOver=${pram}`,
+        {}
+    )
+}
+
+//系统相关数据
 
 let systemInfo = {
     "model":"iPhone 6",
@@ -330,6 +341,7 @@ module.exports = {
     getUserId,
     getUserInfo,
     getGroupList,
+    getUsersList,
     pushSms,
     nav,
     upLoadLonlat,

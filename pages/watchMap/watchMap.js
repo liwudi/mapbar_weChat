@@ -91,6 +91,16 @@ Page({
     var array = list.map((item,i) => {
 
       let loc = item.location.split(",");
+      if(_this.data.index == i){
+        _this.setData({
+          latitude: parseFloat(loc[1]),
+          longitude: parseFloat(loc[0]),
+        });
+
+        wx.setNavigationBarTitle({
+          title: _this.list[_this.data.index].name
+        })
+      }
       return {
         iconPath: "/pages/resouces/myicon/poi_"+(i+1)+((_this.data.index == i)?".png":"x.png"),
         id: i,

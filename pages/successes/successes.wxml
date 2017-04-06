@@ -1,2 +1,83 @@
 <!--pages/successes/successes.wxml-->
-<text>pages/successes/successes.wxml</text>
+<view class="my-container">
+    <map wx:if="{{!isShare}}" id="map" longitude="{{longitude}}" latitude="{{latitude}}" scale="17" controls="{{controls}}" bindcontroltap="controltap" markers="{{markers}}" include-points="{{markers}}" bindmarkertap="markertap" polyline="{{polyline}}" bindregionchange="regionchange" show-location></map>
+    <view class="myinfo">
+        <view class="info">
+            <image class="left-avatar-image" src="{{mySelf.userImg}}"></image>
+            <view class="user-nickname">{{mySelf.userName}}</view>
+            <view class="reached center">
+            已到达
+            </view>
+        </view>
+        <view class="text-sus">
+            <text>恭喜您</text><!--<text class="number-color">{{ranking}}</text>--><text>抵达目的地</text><text class="number-color">{{destination}}</text>
+        </view>
+    </view>
+    <view class="this-travel">
+        <view class="this-travel-title">本次行程</view>
+        <view class="this-travel-info">
+            <view class="the-travel-long">
+                <view class="the-travel-number">{{this_distance}}</view>
+                <view class="the-travel-unit">里程（公里）</view>
+            </view>
+            <view class="the-travel-long">
+                <view class="the-travel-number">{{this_time}}</view>
+                <view class="the-travel-unit">用时（分钟）</view>
+            </view>
+            <view class="the-travel-long">
+                <view class="the-travel-number">{{average_speed}}</view>
+                <view class="the-travel-unit">平均（km/h）</view>
+            </view>
+            <view class="the-travel-last">
+                <view class="the-travel-number">{{max_speed}}</view>
+                <view class="the-travel-unit">最高（km/h）</view>
+            </view>
+        </view>
+    </view>
+    <view class="history-travel">
+        <view class="history-travel-title">历史成就</view>
+        <view class="history-item">
+            <view>
+                <text>累积里程</text><text class="number-color">{{history_distance}}</text><text>公里</text>
+            </view>
+            <!--<view class="font-color">
+                <text>超过</text><text class="number-color">90%</text><text>的用户</text>
+            </view>-->
+        </view>
+        <view class="history-item">
+            <view>
+                <text>单次最远</text><text class="number-color">{{one_max_distance}}</text><text>公里</text>
+            </view>
+            <!--<view class="font-color">
+                <text>超过</text><text class="number-color">90%</text><text>的用户</text>
+            </view>-->
+        </view>
+        <view class="history-item">
+            <view>
+                <text>足迹遍布</text><text class="number-color">{{all_city}}</text><text>个城市</text>
+            </view>
+            <!--<view class="font-color">
+                <text>超过</text><text class="number-color">90%</text><text>的用户</text>
+            </view>-->
+        </view>
+    </view>
+    <view wx:if="{{isShare}}" class="usersList">
+        <view class="user-item" wx:for="{{usersList}}">
+            <view class="item-image">
+                <image class="userImage" src="{{item.img}}"></image>
+            </view>
+            <view class="item-userName">
+                <text>{{item.username}}</text>
+                <text class="second-row">第<text class="number-color">{{index+1}}</text>个到底目的地</text>
+            </view>
+            <view class="item-time center">
+                <text class="number-color">{{item.time}}</text>
+                <text class="second-row">用时（分钟）</text>
+            </view>
+            <view class="item-distance center">
+                <text class="number-color">{{item.distance}}</text>
+                <text class="second-row">里程（公里）</text>
+            </view>
+        </view>
+    </view>
+</view>

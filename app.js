@@ -19,5 +19,6 @@ App({
     globalData: {
         isInit:false,
         userInfo: {},
+        isAutoPlay: true,
     }
 });

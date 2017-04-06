@@ -196,7 +196,7 @@ Page({
   /**
    * 点击录音并且上传
    */
-    touchStartEvent: function() {
+  touchStartEvent: function() {
     let _this = this;
 
     _this.startTime = new Date().getSeconds();
@@ -216,7 +216,6 @@ Page({
       }
       WxService.upLoadFile(savedFilePath,userid,groupid,timelong);
     })
-
   },
   touchEndEvent: function() {
     let _this=this;
@@ -227,82 +226,7 @@ Page({
   touchCancelEvent:function(){
     wx.stopRecord();
   },
-  /**
-   * 函数名：tapNotMeEvent
-   * 作用：点击进行播放语音。
-   */
-  // tapNotMeEvent:function(res){
-  //   // console.log(res);
-  //   let _this=this;
-  //   clearTimeout(_this.voice_timer);
-    
-  //   _this.msgArray = []
-  //   let index = res.target.dataset.id;
-  //   let index1,index2;
-  //   if(index){
-  //     index1 = index.split(".")[0];
-  //     index2 = index.split(".")[1];
-  //     _this.data.chatList[index1].userInfo[index2].tag = 0;
-  //     data[index1].userInfo[index2].tag = 0;
-  //   }else{
-  //     return;
-  //   }
-  //   _this.setData({
-  //     chatList:_this.data.chatList
-  //   });
-  //   for(let i=0;i<_this.data.chatList.length;i++){
-  //     for(let j=0;j<_this.data.chatList[i].userInfo.length;j++){
-  //       if(_this.data.chatList[i].userInfo[j].isMe){
-  //         _this.data.chatList[i].userInfo[j].hronUrl="../resouces/myicon/white_hornc.png";
-  //         data[i].userInfo[j].hronUrl="../resouces/myicon/white_hornc.png";
-  //       }else{
-  //         _this.data.chatList[i].userInfo[j].hronUrl="../resouces/myicon/black_hornc.png";
-  //         data[i].userInfo[j].hronUrl="../resouces/myicon/black_hornc.png";
-  //       }
-  //     }
-  //   }
-  //   //进行audio音频播放，第一步，根据data中的id获取音频地址，然后放在audio中播放
-  //   let audio_id=_this.data.chatList[index1].userInfo[index2].id;
-  //   WxService.downloadFile(audio_id).then(res => {
-  //     console.log(res);
-  //     wx.playVoice({
-  //       filePath: res.tempFilePath
-  //     });
-  //   });   
-  //   tagList.push(_this.data.chatList[index1].userInfo[index2].uptime);
-  //   _this.setData({
-  //     chatList:_this.data.chatList
-  //   });
-  //   clearInterval(this.data.timer);
-  //   let i=0;
-  //   let tag="a";
-    
-  //   let time=parseInt(this.data.chatList[index1].userInfo[index2].voiceLenth);
-  //   this.data.timer=setInterval(function(){
-  //     i++;
-  //     time-=0.5;
-  //     if(i%3==1){
-  //       tag='a';
-  //     }else if(i%3==2){
-  //       tag="b";
-  //     }else{
-  //       tag='c';
-  //     }
-  //     _this.data.chatList[index1].userInfo[index2].hronUrl="../resouces/myicon/black_horn"+tag+".png";
-  //     data[index1].userInfo[index2].hronUrl="../resouces/myicon/black_horn"+tag+".png";
-  //     _this.setData({
-  //       chatList:_this.data.chatList
-  //     });
-  //     if(time<=0){
-  //       clearInterval(_this.data.timer);
-  //       _this.data.chatList[index1].userInfo[index2].hronUrl="../resouces/myicon/black_hornc.png";
-  //       data[index1].userInfo[index2].hronUrl="../resouces/myicon/black_hornc.png";
-  //       _this.setData({
-  //         chatList:_this.data.chatList
-  //       });
-  //     }
-  //   },500);
-  // },
+ 
   tapNotMeEvent: function (res) {
     let _this = this;
 
