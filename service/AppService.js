@@ -314,9 +314,9 @@ function changeGroupName(userId,groupId,groupname){
 
 
 //语音相关
-function voice_search(groupId,pageIndex){
+function voice_search(groupId,pageSize,pageIndex){
     return BaseService.get(
-        `${Config.voice_url}/voiceByGroup?groupid=${groupId}&pageSize=50&pageIndex=${pageIndex}`,
+        `${Config.voice_url}/voiceByGroup?groupid=${groupId}&pageSize=${pageSize}&pageIndex=${pageIndex}`,
         {}
     )
 }

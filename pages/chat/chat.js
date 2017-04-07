@@ -9,7 +9,7 @@ const common = require(`../../utils/util`);
 
 let tagList;//标识的是是否已读。
 
-
+let pageSize = 10;
 
 let data = [];//存放拉取下来的数据，以及onmessage接受的数据。
 
@@ -48,12 +48,35 @@ Page({
           userInfo:res.data.user,
           userId:res.data.user.userId,
       });
-      return AppService.voice_search(options.groupId,_this.data.pageIndex);
+      return AppService.voice_search(options.groupId,5,_this.data.pageIndex);
     }).then(res => {
       console.log(`getInitailData`,res);
       //获取到了一个语音的数组，通过遍历来进行数据处理。
       _this.dealVoiceArray(res);
 
+    })
+  },
+  onPullDownRefresh: function(){
+    let _this = this;
+
+    data = []
+    _this.setData({
+      chatList: []
+    });
+    
+    AppService.voice_search(_this.data.groupId,pageSize,_this.data.pageIndex).then(res => {
+      console.log(res);
+      wx.stopPullDownRefresh();
+      _this.dealVoiceArray(res);
+      if(pageSize == res.data.data.length){
+        pageSize += 5;
+      }else{
+        wx.showToast({
+          title: `没有更多了`,
+          icon: 'success',
+          duration: 2000
+        })
+      }
     })
   },
   dealVoiceArray: function(res) {

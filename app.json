@@ -14,6 +14,7 @@
     "backgroundTextStyle":"light",
     "navigationBarBackgroundColor": "#3c78ff",
     "navigationBarTitleText": "图吧同行",
-    "navigationBarTextStyle":"#fff"
+    "navigationBarTextStyle":"#fff",
+    "enablePullDownRefresh":false
   }
 }
