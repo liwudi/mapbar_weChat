@@ -216,6 +216,9 @@ Page({
     // 页面隐藏
 
   },
+  onUnload: function(){
+    data = [];
+  },
   /**
    * 点击录音并且上传
    */

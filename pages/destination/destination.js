@@ -15,7 +15,7 @@ let controlsArray = [{
     id: 1,
     iconPath: '/pages/resouces/myicon/myposition.png',
     position: {
-        left: 30,
+        left: 10,
         top: 20,
         width: 40,
         height: 40
@@ -25,7 +25,7 @@ let controlsArray = [{
     id: 2,
     iconPath: '/pages/resouces/myicon/allWatchBtn.png',
     position: {
-        left: 30,
+        left: 10,
         top: 60,
         width: 40,
         height: 40

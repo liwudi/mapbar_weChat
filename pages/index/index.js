@@ -49,7 +49,7 @@ Page({
     
     console.log(`执行onshow`)
     AppService.getUserInfo().then(res => {
-      
+      console.log(res);
       if(res.statusCode == 200){
         res.data.user.maxDistance = res.data.user.maxDistance.toFixed(2);
         res.data.user.totalDistance = res.data.user.totalDistance.toFixed(2);
