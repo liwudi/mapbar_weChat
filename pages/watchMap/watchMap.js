@@ -47,6 +47,10 @@ Page({
     });
     _this.markers(_this.list);
 
+    _this.setData({
+      include_markers:_this.data.markers
+    })
+
     let mylist = _this.list.map((item, i) => {
         return {
           title:item.name,

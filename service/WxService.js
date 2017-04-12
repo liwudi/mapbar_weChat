@@ -42,7 +42,7 @@ let wxUserInfo = () =>{
 }
 
 let wxCheckSession = () => {
-    console.log(`zhixing wxCheckSession`)
+    console.log(`wxCheckSession`)
     return new Promise((resolve,reject) => {
         console.log(`resolve`);
         wx.checkSession({
@@ -148,11 +148,11 @@ let connectSocket = (webSocketCode,i = 0) => {
           },
           method: 'POST',
           success: function(){
-            wx.showToast({
-                title: '语音通道建立成功！',
-                icon: 'success',
-                duration: 2000
-            })
+            // wx.showToast({
+            //     title: '语音通道建立成功！',
+            //     icon: 'success',
+            //     duration: 2000
+            // })
           },
           fail: function(){
             if(i > 5){

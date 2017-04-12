@@ -392,7 +392,21 @@ Page({
       lat: latitude,
       speed: speed
     }).then(res => {
-      
+      console.log(`current                        `,res);
+
+      !_this.data.destination && AppService.getUserInfo().then(res => {
+        if(res.statusCode == 200){
+          _this.setData({
+            userInfo: res.data.user,
+            groupList: res.data.groupList,
+          });
+        }
+        let theGroup = _this.data.groupList.find(item => item.groupId == _this.data.groupId)
+       
+        _this.setData({
+            destination: theGroup.destName
+        });
+      })
       let users = res.data.data;
       _this.users = res.data.data;
       _this.setData({

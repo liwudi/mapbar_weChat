@@ -139,6 +139,9 @@ Page({
         item.tag = 0;
       }else{
         item.tag = 1;
+        if(tagList.includes(item.uptime)){
+          item.tag = 0;
+        }
       }
       if(item.userid == _this.data.userId){
         item.isMe = 1;
@@ -162,6 +165,9 @@ Page({
         item.tag = 0;
       }else{
         item.tag = 1;
+        if(tagList.includes(item.uptime)){
+          item.tag = 0;
+        }
       }
       if(item.userid == _this.data.userId){
         item.isMe = 1;
@@ -262,7 +268,8 @@ Page({
     index && (index2 = index.split(".")[1]);
     
     if(index){
-      _this.data.chatList[index1].userInfo[index2].tag = 0
+      _this.data.chatList[index1].userInfo[index2].tag = 0;
+      tagList.push(_this.data.chatList[index1].userInfo[index2].uptime);
     }else{
       return
     }

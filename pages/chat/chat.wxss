@@ -53,7 +53,7 @@ page{
     transform: rotate(45deg) translateY(-50%);
     position: absolute;
     left: -14rpx;
-    top: 50%;
+    top: 48%;
 }
 .not-me-box-cicle{
     position: absolute;
