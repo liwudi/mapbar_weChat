@@ -15,7 +15,7 @@ let controlsArray = [{
     id: 1,
     iconPath: '/pages/resouces/myicon/myposition.png',
     position: {
-        left: AppService.systemInfo.windowWidth - 60,
+        left: 30,
         top: 20,
         width: 40,
         height: 40
@@ -25,7 +25,7 @@ let controlsArray = [{
     id: 2,
     iconPath: '/pages/resouces/myicon/allWatchBtn.png',
     position: {
-        left: AppService.systemInfo.windowWidth - 60,
+        left: 30,
         top: 60,
         width: 40,
         height: 40
@@ -93,7 +93,7 @@ Page({
             userInfo: res.data.user,
             groupList: res.data.groupList,
         });
-         _this.getUserList();
+        _this.getUserList();
         return _this.getRoute();
       }
     }).then(res => {
@@ -119,8 +119,19 @@ Page({
             groupList: res.data.groupList,
         });
       }
-       _this.getUserList();
-      _this.dataDeal();
+      _this.getUserList();
+      //_this.dataDeal();
+    }).then(res => {
+      AppService.getUserInfo().then(res => {
+        
+        if(res.statusCode == 200){
+          _this.setData({
+            userInfo: res.data.user,
+            groupList: res.data.groupList,
+          });
+        }
+        _this.dataDeal();
+      });
     }).catch(error => {
       console.log(error);
     });
@@ -511,7 +522,7 @@ Page({
 
         let playTime = (content.data.timelong + 1) * 1000 ;
 
-        if(content.data.userid != _this.data.userId){
+        if(content.data.userid != _this.data.userInfo.userId){
           wx.playVoice({
             filePath: res.tempFilePath
           })
@@ -529,13 +540,14 @@ Page({
 
 
     function ceaterMarker(content){
+      console.log(`执行了相关Markders`)
       let users = _this.users;
       let theUserIndex = users.findIndex((item) => item.userId == content.data.userid);
       let obj = {
           id: 3,
           iconPath: `/pages/resouces/voice/speak${theUserIndex+1}.png`,
           position: {
-              left: 20,
+              left: AppService.systemInfo.windowWidth - 60,
               top: 20,
               width: 50,
               height: 50
@@ -599,9 +611,11 @@ Page({
     }).then(res => {
       console.log(`saveFile`,res);
       let savedFilePath = res.savedFilePath;
-      let userid =  _this.data.userId;
+      let userid =  _this.data.userInfo.userId;
       let groupid = _this.data.groupId;
       let timelong = ((_this.endTime-_this.startTime)>=0)?(_this.endTime-_this.startTime):(60-_this.startTime+_this.endTime);
+
+      console.log(`上传的各种数据`,userid,groupid)
       WxService.upLoadFile(savedFilePath,userid,groupid,timelong);
     })
 

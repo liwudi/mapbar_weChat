@@ -338,7 +338,7 @@ function closeSocket(){
 
 
 module.exports = {
-    getUserId,
+    getUserId: getUserId,
     getUserInfo,
     getGroupList,
     getUsersList,

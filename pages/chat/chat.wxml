@@ -5,6 +5,8 @@
             <view class="time center">{{itemName.times}}</view>
         </view>
         <view class="user-list" wx:for="{{itemName.userInfo}}">
+
+
             <view class="not-me" wx:if="{{!item.isMe}}">
                 <view class="avatar-image-box">
                     <image class="avatar-image" src="{{item.avatarUrl}}"></image>
@@ -21,6 +23,7 @@
                 </view>
                 
             </view>
+
             <view class="me" wx:if="{{item.isMe}}">
                 <view class="me-box" data-id="{{idx}}.{{index}}"  bindtap="tapMeEvent">
                     <view class="me-box-angle">
@@ -36,6 +39,7 @@
                     <image class="avatar-image margin-left" src="{{item.avatarUrl}}"></image>
                 </view>
             </view>
+
         </view>
     </view>
 </view>

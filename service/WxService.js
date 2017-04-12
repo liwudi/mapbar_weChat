@@ -42,9 +42,14 @@ let wxUserInfo = () =>{
 }
 
 let wxCheckSession = () => {
+    console.log(`zhixing wxCheckSession`)
     return new Promise((resolve,reject) => {
+        console.log(`resolve`);
         wx.checkSession({
-            success: resolve,
+            success: function(e){
+                console.log(e);
+                resolve(1);
+            },
             fail: reject
         })
     })

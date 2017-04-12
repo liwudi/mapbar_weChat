@@ -100,7 +100,7 @@
       </view>
     </view>
   </view>
-  <modal class="modal" title="绑定手机号" wx:if="{{userInfo.userId && !isbind}}" cancel mask bindconfirm="modalConfirmEvent" bindcancel="modalCancelEvent">
+  <!--<modal class="modal" title="绑定手机号" wx:if="{{userInfo.userId && !isbind}}" cancel mask bindconfirm="modalConfirmEvent" bindcancel="modalCancelEvent">
     <view class="number-box">
       <view  class="input-number">
         <input class="my-input" value="{{number_value}}" bindinput="inputNumberEvent"  type="text" placeholder="请输入电话号码" />
@@ -127,7 +127,7 @@
       <view wx:if="{{isClickCode}}" class="get-code center code-color">还剩余{{rest_time}}秒</view>
     </view>
     <view class="right-code red-color" wx:if="{{isWrong}}">请输入正确的验证码！</view>
-  </modal>
+  </modal>-->
 </view>
 
  

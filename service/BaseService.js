@@ -28,7 +28,17 @@ let post = (url,data) => {
     })
 }
 
+let deadline = (time) => {
+    return new Promise((resolve, reject) => {
+        if(new Date().getTime() - time >3600000){
+            reject
+        }else{
+            resolve
+        }
+    })
+}
 module.exports = {
     get,
     post,
+    deadline,
 }

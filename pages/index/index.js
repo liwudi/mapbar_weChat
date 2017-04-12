@@ -44,10 +44,12 @@ Page({
 
 
   onShow: function(options){
-    //console.log(options);
+    
     var _this = this;
+    
+    console.log(`执行onshow`)
     AppService.getUserInfo().then(res => {
-      console.log(`getUserInfo`,res);
+      
       if(res.statusCode == 200){
         res.data.user.maxDistance = res.data.user.maxDistance.toFixed(2);
         res.data.user.totalDistance = res.data.user.totalDistance.toFixed(2);
@@ -192,7 +194,7 @@ Page({
     let groupIndex = res.currentTarget.dataset.id;
     
     let groupId = this.data.groupList[groupIndex].groupId;
-    let isGroupHost = (String(this.data.groupList[groupIndex].userId)==String(this.data.userId))?true:false;
+    let isGroupHost = (String(_this.data.groupList[groupIndex].userId)==String(_this.data.userInfo.userId))?true:false;
     let lat = this.data.groupList[groupIndex].lat;
     let lon = this.data.groupList[groupIndex].lon;
 
