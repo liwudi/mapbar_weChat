@@ -119,7 +119,7 @@ Page({
             groupList: res.data.groupList,
         });
       }
-      _this.getUserList();
+      //_this.getUserList();
       //_this.dataDeal();
     }).then(res => {
       AppService.getUserInfo().then(res => {
