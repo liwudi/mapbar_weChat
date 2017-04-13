@@ -304,7 +304,7 @@ Page({
         destlat:destlat,
         groupid:groupid
       }).then(res => {
-        //console.log(res);
+        console.log(res);
         let data = res.data.data.routelatlon;
         _this.dealRouteData(data);
       })
@@ -375,7 +375,7 @@ Page({
       speed = (res.speed == -1||`undefined`)?0:res.speed;
       
     }).then(res =>{
-  
+      console.log(longitude,latitude,speed);
       _this.updateLocation(longitude,latitude,speed);
     })
   },
@@ -392,7 +392,7 @@ Page({
       lat: latitude,
       speed: speed
     }).then(res => {
-      console.log(`current                        `,res);
+      
 
       !_this.data.destination && AppService.getUserInfo().then(res => {
         if(res.statusCode == 200){
