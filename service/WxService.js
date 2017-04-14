@@ -59,7 +59,7 @@ let currentPoint = {}
 
 let getLocation = () => {
     return new Promise((resolve, reject) => {
-        if(currentPoint.time && new Date().getTime() - currentPoint.time < 9*1000){
+        if(currentPoint.time && (new Date().getTime() - currentPoint.time < 6*1000)){
             resolve(currentPoint);
         }else{
             wx.getLocation({
@@ -107,7 +107,6 @@ let showModal = (title,content,isShowCancel,next) => {
     wx.showModal({
         title: title,
         content: content,
-        showCancel: isShowCancel,
         success: function (res){
             if(res.confirm) {
                 next&&next();

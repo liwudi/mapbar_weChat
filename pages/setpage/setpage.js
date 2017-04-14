@@ -52,7 +52,16 @@ Page({
   confirmEvent:function(){
     let _this=this;
     console.log(_this.data.userId,_this.data.groupId);
-    WxService.showModal(`提示`,`您确定要退出或者解散群组吗?`,true,AppService.exitTheGroup(_this.data.userId,_this.data.groupId))
+    
+    wx.showModal({
+      title: '提示',
+      content: '您确定要退出或者解散群组吗?',
+      success: function(res) {
+        if (res.confirm) {
+          AppService.exitTheGroup(_this.data.userId,_this.data.groupId);
+        }
+      }
+    })
   },
   setEvent:function(){
     this.setData({

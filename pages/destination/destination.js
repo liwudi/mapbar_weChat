@@ -93,7 +93,6 @@ Page({
             userInfo: res.data.user,
             groupList: res.data.groupList,
         });
-        _this.getUserList();
         return _this.getRoute();
       }
     }).then(res => {
@@ -119,19 +118,10 @@ Page({
             groupList: res.data.groupList,
         });
       }
-      //_this.getUserList();
-      //_this.dataDeal();
+      
     }).then(res => {
-      AppService.getUserInfo().then(res => {
-        
-        if(res.statusCode == 200){
-          _this.setData({
-            userInfo: res.data.user,
-            groupList: res.data.groupList,
-          });
-        }
-        _this.dataDeal();
-      });
+      
+      _this.dataDeal();
     }).catch(error => {
       console.log(error);
     });
@@ -190,51 +180,7 @@ Page({
    * 直接通过群组id获取用户信息列表
    * @param groupid-群id
    */
-  getUserList: function(){
-    let _this = this;
-
-    AppService.getUsersList(_this.data.groupId,2).then(res => {
-
-      let users = res.data.data;
-      console.log(`current`,users);
-      users.map((item,i) => {
-        item.index = i;
-        item.avatar_url = `../resouces/voice/avatar_tag${i+1}.png`;
-      })
-
-      let mySelf = users.find(item => item.userId == _this.data.userInfo.userId);
-      console.log(`current   mySelf`,mySelf);
-      if(mySelf){
-        _this.setData({
-            mydistance: mySelf.distanceSurplus,
-            mytime: parseInt(mySelf.surplusTime / 60),
-            myspeed: parseInt(mySelf.speed),
-            my_tag_url: `../resouces/voice/avatar_tag${mySelf.index+1}.png`
-        });
-      }
-      
-
-      users = users.filter(item => item.userId != _this.data.userInfo.userId);
-      console.log(`current   users`,users);
-      if(users){
-        users.forEach((item, i) => {
-            item.updateTime = common.getNowDate(item.updateTime);
-            item.surplusTime = parseInt(item.surplusTime / 60);
-
-            if (item.speed) {
-                item.speed = parseInt(item.speed);
-            }
-            if (item.speed < 0) {
-                item.speed = 0;
-            }
-        });
-        _this.setData({
-            usersList: users
-        });
-      }
-      
-    })
-  },
+  
   dataDeal: function(){
     let _this = this;
 
@@ -263,7 +209,7 @@ Page({
         origin_lon:res.longitude
       });
       let [lat,lon,destlon,destlat,groupid] = [res.latitude,res.longitude,_this.data.destlon,_this.data.destlat,_this.data.groupId];
-      console.log(lat,lon,destlon,destlat,groupid);
+      console.log(`第一次画路线`,lat,lon,destlon,destlat,groupid);
       AppService.nav({
         lat:lat,
         lon:lon,
@@ -369,13 +315,14 @@ Page({
     let _this = this;
     let longitude,latitude,speed;
     WxService.getLocation().then(res => {
-      //console.log(`getLocation-----`,res);
+      console.log(`getLocation-----`,res);
       longitude = res.longitude;
       latitude = res.latitude;
-      speed = (res.speed == -1||`undefined`)?0:res.speed;
-      
+      //console.log(typeof res.speed == `undefined`);
+      speed = (typeof res.speed == `undefined`||parseInt(res.speed) < 0)? 0 : parseInt(res.speed)*3.6;
+      console.log(`wx接口获取`,longitude,latitude,speed);
     }).then(res =>{
-      console.log(longitude,latitude,speed);
+      console.log(`upLoadLonlat准备上传的数据`,longitude,latitude,speed);
       _this.updateLocation(longitude,latitude,speed);
     })
   },
@@ -393,7 +340,7 @@ Page({
       speed: speed
     }).then(res => {
       
-
+      console.log(`updateLocation返回数据`,res)
       !_this.data.destination && AppService.getUserInfo().then(res => {
         if(res.statusCode == 200){
           _this.setData({
@@ -421,7 +368,7 @@ Page({
       })
       //console.log(`users`,users);
       let mySelf = users.find(item => item.userId == _this.data.userInfo.userId);
-      
+      console.log(`mySelf`,mySelf);
       if (mySelf) {
           dealMySelf();
       }
@@ -434,7 +381,7 @@ Page({
       function dealMySelf(){
         _this.setData({
               mydistance: mySelf.distanceSurplus,
-              mytime: parseInt(mySelf.surplusTime / 60),
+              mytime: (parseInt(mySelf.surplusTime / 60/60) < 1)?parseInt(mySelf.surplusTime / 60) + "分钟":parseInt(mySelf.surplusTime / 60/60) + "小时" + parseInt(mySelf.surplusTime / 60%60) + "分钟",
               myspeed: parseInt(mySelf.speed),
               my_tag_url: `../resouces/voice/avatar_tag${mySelf.index+1}.png`
           });
@@ -461,7 +408,7 @@ Page({
             });
 
             item.updateTime = common.getNowDate(item.updateTime);
-            item.surplusTime = parseInt(item.surplusTime / 60);
+            item.surplusTime = (parseInt(mySelf.surplusTime / 60/60) < 1)?parseInt(mySelf.surplusTime / 60) + "分钟":parseInt(mySelf.surplusTime / 60/60) + "小时" + parseInt(mySelf.surplusTime / 60%60) + "分钟";
 
             if (item.speed) {
                 item.speed = parseInt(item.speed);

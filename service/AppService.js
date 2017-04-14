@@ -47,28 +47,27 @@ function setUserInfo(userInfo){
 function getUserInfo(){
     return WxService.wxCheckSession().then(() => {
         if(userInfo&&userId&&userName&&userImg){
-            console.log(`再次通道`);
             
             return getGroupList()
         }else{
             return WxService.wxLogin().then((res) => {
                 
                 return WxService.wxUserInfo().then((data) => {
-                    console.log(`首次通道`);
+            
                     data.code = res.code;
                     return data;
                 })
             }).then((res) => {
-                console.log(res)
+                
                 return getUserId(res.code,res.userInfo.avatarUrl,res.userInfo.nickName);
             })
         }
     }).catch(() => {
-        console.log(`catch通道`);
+        
         return WxService.wxLogin().then((res) => {
             
             return WxService.wxUserInfo().then((data) => {
-                console.log(data);
+                
                 data.code = res.code;
                 return data;
             })

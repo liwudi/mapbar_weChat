@@ -72,6 +72,7 @@ map{
 }
 .right-distination{
     width: 30%;
+    text-align: right;
 }
 
 .place{
@@ -94,13 +95,14 @@ map{
      color: #0033ff;
 }
 .content-bottom-left{
-    width: 70%;
+    width: 80%;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
 }
 .content-bottom-right{
-    width: 30%;
+    width: 20%;
+    text-align: right;
 }
 .route{
     width: 200rpx;   
