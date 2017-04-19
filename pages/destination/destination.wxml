@@ -127,7 +127,7 @@
             <image class="img" src="../resouces/myicon/set.png" bindtap="setEvent"></image>
         </view>
         <view class="middle-btn center" bindtouchstart="touchStartEvent" bindtouchend="touchEndEvent" bindtouchcancel="touchCancelEvent">
-            <button class="speak-btn center" hover-class="button-hover">按住说话</button>
+            <button style="background-color:{{color}};" class="speak-btn center" hover-class="button-hover">按住说话</button>
         </view>
         <view class="right-chat center" wx:if="{{!isSpeak}}">
             <image class="img" src="../resouces/myicon/chat.png" bindtap="chatEvent"></image>

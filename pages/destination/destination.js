@@ -72,6 +72,7 @@ Page({
     }],
     //speak
     voice_number: 0,
+    color: "#f8f8f8"
   },
   onLoad:function(options){
     let _this = this;
@@ -374,7 +375,7 @@ Page({
       }
 
 
-      users = users.filter(item => item.userId != _this.data.userInfo.userId);
+      users = users.filter(item => item.userId != _this.data.userInfo.userId && item.userName != null);
       if(users){
         dealUsers();
       }
@@ -423,6 +424,11 @@ Page({
         });
       }
    
+    }).catch(error => {
+      wx.showToast({
+        title: "您的网络不稳定！",
+        icon: "loading"
+      })
     });
   },
   onmessage: function(){
@@ -562,7 +568,9 @@ Page({
   //上传语音相关
   touchStartEvent: function() {
     let _this = this;
-
+    _this.setData({
+      color: "#aaaaaa"
+    })
     _this.startTime = new Date().getSeconds();
     WxService.startRecord().then(res => {
       console.log(res)
@@ -583,6 +591,9 @@ Page({
   },
   touchEndEvent: function() {
     let _this=this;
+    _this.setData({
+      color: "#f8f8f8"
+    })
     wx.stopRecord();
     _this.endTime = new Date().getSeconds();
   },
