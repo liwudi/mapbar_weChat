@@ -47,18 +47,19 @@ function setUserInfo(userInfo){
 function getUserInfo(){
     return WxService.wxCheckSession().then(() => {
         if(userInfo&&userId&&userName&&userImg){
-            
+            console.log(`再次登陆`)
             return getGroupList()
         }else{
             return WxService.wxLogin().then((res) => {
-                
+                console.log(`首次登陆${res.code}`)
                 return WxService.wxUserInfo().then((data) => {
-            
+                    
                     data.code = res.code;
+                    console.log('data',data);
                     return data;
                 })
             }).then((res) => {
-                
+                console.log(res)
                 return getUserId(res.code,res.userInfo.avatarUrl,res.userInfo.nickName);
             })
         }
@@ -85,7 +86,8 @@ function getUserId(code, avatarUrl, nickName){
             userimg:avatarUrl,
             username:nickName,
         }
-    ).then(res => {  
+    ).then(res => {
+        console.log(`获得结果res`,res);  
         setUserInfo(res.data.user);
         return res;
     })
