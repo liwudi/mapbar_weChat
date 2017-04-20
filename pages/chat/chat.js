@@ -81,8 +81,9 @@ Page({
   },
   dealVoiceArray: function(res) {
     let _this = this;
-    
-    let voice_array = res.data.data.reverse();
+    console.log(res.data.data)
+    let voice_array = res.data.data;
+    console.log(voice_array)
     for(let i=0;i<voice_array.length;i++){
       _this.dealItemData(voice_array[i])
     }
