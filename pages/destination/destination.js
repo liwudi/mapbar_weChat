@@ -409,7 +409,7 @@ Page({
             });
 
             item.updateTime = common.getNowDate(item.updateTime);
-            item.surplusTime = (parseInt(users.surplusTime / 60/60) < 1)?parseInt(users.surplusTime / 60) + "分钟":parseInt(users.surplusTime / 60/60) + "小时" + parseInt(users.surplusTime / 60%60) + "分钟";
+            item.surplusTime = (parseInt(item.surplusTime / 60/60) < 1)?parseInt(item.surplusTime / 60) + "分钟":parseInt(item.surplusTime / 60/60) + "小时" + parseInt(item.surplusTime / 60%60) + "分钟";
 
             if (item.speed) {
                 item.speed = parseInt(item.speed);
