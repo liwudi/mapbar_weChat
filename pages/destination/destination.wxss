@@ -60,6 +60,8 @@ map{
 .name{
     width: 200rpx;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .distination{
     width: 300rpx;
@@ -68,7 +70,10 @@ map{
     white-space: nowrap;
 }
 .left-name{
-    width: 70%;
+    width: 400rpx;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .right-distination{
     width: 30%;

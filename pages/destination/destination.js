@@ -88,6 +88,7 @@ Page({
    
     options.isShare && AppService.getUserInfo().then((res) => {
       
+      console.log('qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq userInfo', res.data.user)
       if(res.statusCode == 200){
         isShare = true;
         _this.setData({
@@ -112,7 +113,7 @@ Page({
     });
 
     !options.isShare && AppService.getUserInfo().then(res => {
-      
+      console.log('get USer info',res);
       if(res.statusCode == 200){
         _this.setData({
             userInfo: res.data.user,
@@ -216,9 +217,10 @@ Page({
         lon:lon,
         destlon:destlon,
         destlat:destlat,
-        groupid:groupid
+        groupid:groupid,
+        userid:_this.data.userInfo.userId
       }).then(res => {
-        //console.log(res);
+        console.log('第一次画路线结果',res);
         let data = res.data.data.routelatlon;
         _this.dealRouteData(data);
          markers = _this.data.markers;
@@ -241,9 +243,9 @@ Page({
     let _this = this;
     
     WxService.getLocation().then(res => {
-      //console.log(res);
+      console.log(res);
       let [lat,lon,destlon,destlat,groupid] = [res.latitude,res.longitude,_this.data.destlon,_this.data.destlat,_this.data.groupId];
-      //console.log(lat,lon,destlon,destlat,groupid);
+      console.log('每60s重新算路',lat,lon,destlon,destlat,groupid);
       AppService.nav({
         lat:lat,
         lon:lon,
@@ -256,7 +258,7 @@ Page({
         _this.dealRouteData(data);
       })
     }).catch(error => {
-      //console.log(error);
+      console.log(error);
       wx.showToast({
         title: '您可能未打开定位信息！',
         icon: 'loading',
@@ -338,7 +340,8 @@ Page({
       groupid: _this.data.groupId,
       lon: longitude,
       lat: latitude,
-      speed: speed
+      speed: speed,
+      userid: _this.data.userInfo.userId
     }).then(res => {
       
       console.log(`updateLocation返回数据`,res)

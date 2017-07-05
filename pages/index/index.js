@@ -51,8 +51,8 @@ Page({
     AppService.getUserInfo().then(res => {
       console.log(res);
       if(res.statusCode == 200){
-        res.data.user.maxDistance = res.data.user.maxDistance.toFixed(2);
-        res.data.user.totalDistance = res.data.user.totalDistance.toFixed(2);
+        res.data.user.maxDistance = res.data.user.maxDistance.toFixed(2) || 0;
+        res.data.user.totalDistance = res.data.user.totalDistance.toFixed(2) || 0;
         //缓存全局userid，在适当的时候使用，可减少http请求。
         app.globalData.userInfo = res.data.user;
         _this.setData({
@@ -61,6 +61,8 @@ Page({
             groupList: res.data.groupList,
         })
       }
+    }).catch(err =>{
+      console.log(err);
     })
   },
  
@@ -122,7 +124,7 @@ Page({
       })
       return
     }
-    AppService.upLoadPin(_this.data.code_value).then(res => {
+    AppService.upLoadPin(_this.data.userInfo.userId,_this.data.code_value).then(res => {
       console.log(res);
       if(res.status==6001){
         _this.setData({
@@ -155,7 +157,7 @@ Page({
         showCancel:false,
       });
     }else{
-      AppService.pushSms(this.data.number_value).then(res => {
+      AppService.pushSms(this.data.userInfo.userId,this.data.number_value).then(res => {
         console.log(res);
         _this.setData({
           isClickCode:!_this.data.isClickCode

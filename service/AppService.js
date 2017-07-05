@@ -68,7 +68,7 @@ function getUserInfo(){
         return WxService.wxLogin().then((res) => {
             
             return WxService.wxUserInfo().then((data) => {
-                
+              console.log('data', data);
                 data.code = res.code;
                 return data;
             })
@@ -79,6 +79,7 @@ function getUserInfo(){
 }
 
 function getUserId(code, avatarUrl, nickName){
+    console.log('code',code);
     return BaseService.get(
         `${Config.main_url}/wxGroup/login.json`,
         {
@@ -134,22 +135,22 @@ wx.getSystemInfo({
     }
 });
 
-function pushSms(phoneNum){
+function pushSms(userId,phoneNum){
     return BaseService.get(
         `${Config.main_url}/wxGroup/pushSms.json`,
         {
-            userId:userInfo.userId,
+            userId,
             phoneNum
         }
     )
 }
 
-function upLoadPin(code_value){
+function upLoadPin(userid,code_value){
     return BaseService.get(
       `${Config.main_url}/wxGroup/uploadPin.json`,
       {
         pin:code_value,
-        userid:userInfo.userId
+        userid: userid
       }
     )
 }
