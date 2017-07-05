@@ -1,16 +1,16 @@
 //config.js
-module.exports_waiwang = {
+module.exports = {
     main_url: `https://wireless.mapbar.com/api/3n1-wxgroup`,
     voice_url: `https://wdservice.mapbar.com/weixin-test/api/3n1-wxgroupvoice`,
     voice_socket_url: `wss://wdservice.mapbar.com/weixin-test/api/3n1-wxgroupvoice`,
     search_url: `https://w.mapbar.com/search2015/search`,
 }
 
-module.exports_test = {
-  main_url: `http://192.168.0.175:8035`,
-  voice_url: `https://wdservice.mapbar.com/weixin-test/api/3n1-wxgroupvoice`,
-  voice_socket_url: `wss://wdservice.mapbar.com/weixin-test/api/3n1-wxgroupvoice`,
-  search_url: `https://w.mapbar.com/search2015/search`,
-}
+// module.exports_test = {
+//   main_url: `http://192.168.0.175:8035`,
+//   voice_url: `https://wdservice.mapbar.com/weixin-test/api/3n1-wxgroupvoice`,
+//   voice_socket_url: `wss://wdservice.mapbar.com/weixin-test/api/3n1-wxgroupvoice`,
+//   search_url: `https://w.mapbar.com/search2015/search`,
+// }
 
-module.exports = module.exports_test;
+// module.exports = module.exports_waiwang;
