@@ -78,9 +78,11 @@ Page({
           mylist[i].district = list[i].district;
           if(list[i]["name"].match(_this.data.inputData)){
             mylist[i].leftName = _this.data.inputData;
+            
             mylist[i].rightName = list[i]["name"].substr(_this.data.inputData.length);
+            
             if(list[i]["name"].indexOf(_this.data.inputData)!=0){
-              mylist[i].proName = list[i]["name"].substring(0,_this.data.inputData.length);
+              mylist[i].proName = list[i]["name"].substring(0, list[i]["name"].indexOf(_this.data.inputData));
               mylist[i].rightName = list[i]["name"].substr(list[i]["name"].indexOf(_this.data.inputData)+_this.data.inputData.length);
             }
           }else{
