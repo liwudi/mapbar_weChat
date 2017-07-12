@@ -1,5 +1,18 @@
 <!--pages/searchResult/searchResult.wxml-->
 <view class="container" wx:if="{{!hasOther}}">
+    <view class="city-chioce common-box" wx:if="{{suggestCities.length}}">
+        <view class="city-chioce-text-box common-text-box">
+            <text class="your-find-text common-text">请在下列城市中选择</text>
+        </view>
+        <view class="city-list common-list"  wx:for="{{suggestCities}}">
+            <view class="city-list common-list" bindtap="suggestCityEvent">
+                <view class="city-name">{{item.name}}</view>
+                <view class="city-chioce-image-box">
+                    <image class="set-destination-image " src="../resouces/myicon/more.png"></image>
+                </view>
+            </view>     
+        </view>
+    </view>
     <view class="next-page center" wx:if="{{page_num>1}}" bindtap="prePageEvent">
         <text class="text-color" >上一页</text>
     </view>
@@ -28,8 +41,8 @@
             <view class="split"></view>
         </view>
     </view>
-    <view class="next-page center"  bindtap="nextPageEvent">
-        <text class="text-color"  wx:if="{{!(target_num/10<=page_num)}}">下一页</text>
+    <view class="next-page center">
+        <text class="text-color"   bindtap="nextPageEvent"  wx:if="{{!(target_num/10<=page_num)}}">下一页</text>
         <text class="text-color" wx:if="{{target_num/10<=page_num}}">没有更多了</text>
     </view>
 </view>

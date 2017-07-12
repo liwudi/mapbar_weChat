@@ -14,7 +14,8 @@ Page({
     latitude: ``,
     currentCity: ``,
     cityCode: ``,
-
+    suggestCities:[],
+    suggestCityIndex:0,
 
 
     destinationList:[],//关键字搜索列表
@@ -119,7 +120,9 @@ Page({
         destinationList:list,
         target_num:num
       });
-      
+      res.suggestCities && _this.setData({
+        suggestCities: res.suggestCities
+      })
     }else if(res.districtSwap){
 
       _this.setData({
@@ -165,7 +168,7 @@ Page({
       duration: 10000
     })
 
-    AppService.aroundSearch(this.data.destination,str,cityCode,this.data.page_num+1).then(res => {
+    AppService.aroundSearch(this.data.destination,str,cityCode,this.data.page_num-1).then(res => {
 
       let list=res.data.pois;
       for(let i=0;i<list.length;i++){
@@ -262,6 +265,19 @@ Page({
     });
     let cityCode = _this.data.cityCode;
     _this.keywordsSearch(cityCode,str,_this.data.page_num);
+  },
+  suggestCityEvent:function(){
+    let _this = this;
+    let x = this.data.longitude;
+    let y = this.data.latitude;
+    let str = "" + x + "," + y;
+    let cityCode = _this.data.suggestCities[_this.data.suggestCityIndex].adcode;
+    _this.keywordsSearch(cityCode, str, _this.data.page_num);
+
+    this.setData({
+      suggestCities: [],
+      hasOther: false
+    });
   },
   otherCityEvent: function(){
     let _this = this;
