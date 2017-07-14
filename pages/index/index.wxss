@@ -131,6 +131,10 @@ item-image{
   left: 200rpx;
   top: 30rpx;
   color: #000000;
+  width: 500rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .user-info{
   width: 100%;
