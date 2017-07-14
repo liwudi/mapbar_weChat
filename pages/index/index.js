@@ -51,8 +51,8 @@ Page({
     AppService.getUserInfo().then(res => {
       console.log(res);
       if(res.statusCode == 200){
-        res.data.user.maxDistance = res.data.user.maxDistance.toFixed(2) || 0;
-        res.data.user.totalDistance = res.data.user.totalDistance.toFixed(2) || 0;
+        res.data.user.maxDistance = (res.data.user.maxDistance == null)? 0 : res.data.user.maxDistance.toFixed(2);
+        res.data.user.totalDistance = (res.data.user.totalDistance == null) ? 0 : res.data.user.totalDistance.toFixed(2);
         //缓存全局userid，在适当的时候使用，可减少http请求。
         app.globalData.userInfo = res.data.user;
         _this.setData({

@@ -81,8 +81,8 @@ Page({
   },
   dealVoiceArray: function(res) {
     let _this = this;
-    console.log(res.data.data)
-    let voice_array = res.data.data;
+    console.log('目前语音序列',res.data.data)
+    let voice_array = res.data.data.reverse();
     console.log(voice_array)
     for(let i=0;i<voice_array.length;i++){
       _this.dealItemData(voice_array[i])
