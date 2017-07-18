@@ -10,7 +10,11 @@ const common = require(`../../utils/util`);
 let markers;
 
 let isShare = false;
-
+/**
+ * @todo:dataDeal function,两个错误undefined is not a object（theGroup.destName）2,Can not read Perperty 'destname' of undefined。
+ * 
+ * @todo：检查界面跳转，只有传递了相关参数，才能进行跳转。
+ */
 let controlsArray = [{
     id: 1,
     iconPath: '/pages/resouces/myicon/myposition.png',
@@ -44,6 +48,7 @@ Page({
     mytime:``,
     myspeed:``,
     usersList:null,
+    userNumber:0,
     //options传递参数
     isGroupHost:``,
     groupId:``,
@@ -189,10 +194,10 @@ Page({
     let theGroup = _this.data.groupList.find(item => item.groupId == _this.data.groupId)
     console.log(_this.data.groupList);
     console.log(_this.data.groupId);
-    _this.setData({
+    theGroup && _this.setData({
         destination: theGroup.destName
     });
-    wx.setNavigationBarTitle({
+    theGroup && wx.setNavigationBarTitle({
         title: theGroup.groupName
     });
     _this.getRoute();
@@ -423,7 +428,8 @@ Page({
         });
         _this.setData({
             markers: userMarkers,
-            usersList: users
+            usersList: users,
+            userNumber:users.length + 1
         });
       }
    
