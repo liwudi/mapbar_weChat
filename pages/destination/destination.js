@@ -93,7 +93,7 @@ Page({
    
     options.isShare && AppService.getUserInfo().then((res) => {
       
-      console.log('qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq userInfo', res.data.user)
+      
       if(res.statusCode == 200){
         isShare = true;
         _this.setData({
@@ -389,7 +389,7 @@ Page({
       }
       function dealMySelf(){
         _this.setData({
-              mydistance: mySelf.distanceSurplus,
+              mydistance: mySelf.distanceSurplus.toFixed(1),
               mytime: (parseInt(mySelf.surplusTime / 60/60) < 1)?parseInt(mySelf.surplusTime / 60) + "分钟":parseInt(mySelf.surplusTime / 60/60) + "小时" + parseInt(mySelf.surplusTime / 60%60) + "分钟",
               myspeed: parseInt(mySelf.speed),
               my_tag_url: `../resouces/voice/avatar_tag${mySelf.index+1}.png`
@@ -415,7 +415,7 @@ Page({
                 height: 40,
                 marker_tag: i
             });
-
+            item.distanceSurplus = item.distanceSurplus.toFixed(1);
             item.updateTime = common.getNowDate(item.updateTime);
             item.surplusTime = (parseInt(item.surplusTime / 60/60) < 1)?parseInt(item.surplusTime / 60) + "分钟":parseInt(item.surplusTime / 60/60) + "小时" + parseInt(item.surplusTime / 60%60) + "分钟";
 

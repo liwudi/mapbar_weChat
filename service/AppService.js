@@ -190,7 +190,7 @@ function getCityCode(){
         })
     }else{
         return WxService.getLocation().then(res => {
-        
+            console.log('图吧地址',res);
             return BaseService.get(
                 `https://wedrive.mapbar.com/opentsp/gis/api/inverse?resType=json&lat=${res.latitude}&lon=${res.longitude}&inGb=02&outGb=g02&ak=69453725f7e942bb84eac04189fd20ab`,
                 {}

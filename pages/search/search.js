@@ -32,6 +32,7 @@ Page({
       console.log(res);
       _this.data.cityCode = res.code
     }).catch(e => {
+      _this.data.cityCode = 110000
       console.log(e);
     })
   },

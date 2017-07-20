@@ -30,6 +30,7 @@ Page({
 
     userInfo: {},//初始化的用户昵称、头像信息
     groupList: [],//用于展示群的列表
+    groupNumber: null,
     isbind: false,//标识是否绑定了电话
 
     isClickCode: false,//是否在验证码时间内
@@ -59,10 +60,13 @@ Page({
             userInfo: res.data.user,
             isbind: res.data.user.userPhone,
             groupList: res.data.groupList,
+            groupNumber: res.data.groupList.length
         })
       }
     }).catch(err =>{
       console.log(err);
+      console.log('我在这里提示！');
+      WxService.showModal('温馨提示', '授权后才能使用图吧小程序哦！请删除，重新添加图吧小程序进行授权。', false);
     })
   },
  
