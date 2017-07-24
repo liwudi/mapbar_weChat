@@ -129,13 +129,13 @@
 .common-box{
   width: 100%;
   height: auto;
-  padding-left: 30rpx;
+
   box-sizing: border-box;
-  border-bottom: 2rpx solid #cccccc;
 }
 .common-text-box{
   width: 100%;
   height: 70rpx;
+  margin-left: 30rpx;
   font-size: 24rpx;
   color: #aaaaaa;
   display: flex;
@@ -145,15 +145,18 @@
 .common-list{
   width: 100%;
   height: 100rpx;
+  padding-left: 30rpx;
   color: #555555;
   font-size: 30rpx;
   display: flex;
   align-items: center;
   position: relative;
+  border-bottom: 1rpx solid #cccccc;
 }
 .city-chioce-image-box{
   width: 40rpx;
   height: 30rpx;
+  padding-right: 30rpx;
   position: absolute;
   right: 20rpx;
 }

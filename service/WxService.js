@@ -69,7 +69,10 @@ let getLocation = () => {
                     currentPoint = res;
                     resolve(res);
                 },
-                fail: reject
+                fail: (err) => {
+                  reject(err);
+                  showSetModal('地理位置')
+                }
             })
         }
         
@@ -203,6 +206,36 @@ let onmessageSocket = () => {
     })
     
 }
+//获取网络类型
+let getNetworkType = () => {
+  return new Promise((resolve,reject) => {
+    wx.getNetworkType({
+      success: function (res) {
+        // wifi/2g/3g/4g/unknown(Android下不常见的网络类型)/none(无网络)
+        var networkType = res.networkType
+        resolve(networkType);
+      },
+      fail: reject
+    })
+  })
+}
+
+//showSetModal
+let showSetModal = (title) => {
+  return new Promise((resolve, reject) => {
+    wx.showModal({
+      title: `请确认${title}授权开启`,
+      content: '1、点击右上角“...”，进入关于图吧界面   2、再点击右上角“...”打开授权设置界面',
+      confirmText: '知道了',
+      showCancel: false,
+      success: function (res) {
+        if (res.confirm) {
+          resolve(res.confirm)
+        }
+      }
+    })
+  })
+}
 
 module.exports = {
     wxLogin,
@@ -212,6 +245,7 @@ module.exports = {
     navigateTo,
     redirectTo,
     showModal,
+    showSetModal,
 
     startRecord,
     saveFile,
@@ -221,4 +255,6 @@ module.exports = {
     
     upLoadFile,
     downloadFile,
+
+    getNetworkType
 }

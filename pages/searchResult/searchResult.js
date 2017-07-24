@@ -14,6 +14,8 @@ Page({
     latitude: ``,
     currentCity: ``,
     cityCode: ``,
+    cities:[],
+
     suggestCities:[],
     suggestCityIndex:0,
 
@@ -28,6 +30,8 @@ Page({
 
     other_cityName: ``,
     other_detailCityName: ``,
+
+    otherDataList:[],
     
     isShowTaost:true,
     other_cityCode:null,
@@ -35,7 +39,7 @@ Page({
   },
   /**
    * 函数名：onLoad
-   * 作用：获取自己当前位置坐标，接收上个页面传递过来的位置关键字
+   * 作用：获取自己当前位置坐标，接收上个页面传递过来的位置关键字，获取城市code
    */
   onLoad:function(options){
     console.log("options",options);
@@ -64,12 +68,14 @@ Page({
 
       let str = ""+_this.data.longitude+","+_this.data.latitude;
       let page_num = _this.data.page_num;
-      console.log(`在common中执行search`,_this.data.cityCode,str,page_num);
+      
       _this.commonSearch(_this.data.cityCode,str,page_num);
     }); 
   },
 
-  
+  /**
+   * @function commonSearch 一般搜索
+   */
   commonSearch: function(cityCode,str,page_num){
     let _this = this;
     WxService.getLocation().then(res => {
@@ -85,23 +91,45 @@ Page({
 
     })
   },
-  keywordsSearch: function(cityCode,str,page_num){
+  /**
+   * @function keywordsSearch 关键字搜索
+   */
+  keywordsSearch: function(cityCode,str,page_num,value){
     let _this = this;
     WxService.getLocation().then(res => {
       _this.setData({
         longitude:res.longitude,
         latitude:res.latitude
       });
-      
+      console.log('keyworld',str);
+      if(value){
+        return AppService.keywordsSearch(value, str, cityCode, page_num);
+        
+      }
       return AppService.keywordsSearch(_this.data.destination,str,cityCode,page_num);
+
+      
     }).then(res => {
       console.log("sucess返回数据",res);
       
       _this.dealSearchData(res.data);
     })
   },
+  
+  /**
+   * @function dealSearchData 
+   * 对搜索结果进行处理
+   */
   dealSearchData: function(res) {
     let _this = this;
+    if (res.suggestCities){
+      _this.setData({
+        suggestCities: res.suggestCities,
+        other_cityCode: res.suggestCities[0].adcode,
+        other_cityPoints: res.suggestCities[0].centerPoint,
+        other_detailCityName: res.suggestCities[0].simpleName
+      });
+    }
     if(res.pois){
       let num;
       if(res.totalCount>200){
@@ -113,26 +141,38 @@ Page({
       let list=res.pois;
       for(let i=0;i<list.length;i++){
         console.log(list[i].distance/1000);
-        list[i].distance=list[i].distance/1000>=1?parseInt(list[i].distance/1000)+"km":parseInt(list[i].distance)+"m";
+        list[i].distance = list[i].distance / 1000 >= 1 ? parseInt(list[i].distance / 1000) + "km" : (parseInt(list[i].distance) < 10 ? "附近" : parseInt(list[i].distance)+"m");
       }
       console.log("处理后list",list);
+      console.log('数据总数',num)
       _this.setData({
         destinationList:list,
         target_num:num
       });
-      res.suggestCities && _this.setData({
-        suggestCities: res.suggestCities
-      })
-    }else if(res.districtSwap){
+    }
+    if(res.districtSwap){
 
       _this.setData({
         hasOther: true,
         other_cityName:`${res.districtSwap.name}`,
-        other_detailCityName:`${res.districtSwap.parents}${res.districtSwap.name}`,
+        other_detailCityName: res.districtSwap.parents == null ? `${res.districtSwap.name}`:`${res.districtSwap.parents}${res.districtSwap.name}`,
         other_cityCode:`${res.districtSwap.adcode}`,
         other_cityPoints:`${res.districtSwap.centerPoint}`
+      });
+      _this.suggestCityEvet();
+    }
+    if (res.cities){
+    
+      _this.setData({
+        cities: res.cities
       })
     }
+    if (res.corrections){
+      _this.setData({
+        otherDataList: res.corrections
+      })
+    }
+    
   },
   onReady:function(){
     // 页面渲染完成
@@ -153,34 +193,47 @@ Page({
    */
   prePageEvent:function(){
     let _this = this;
-    let x = this.data.longitude;
-    let y = this.data.latitude;
-    let str = ""+x+","+y;
-    let cityCode = _this.data.cityCode;
-    if(_this.data.other_cityCode){
-      cityCode = _this.data.other_cityCode;
-      str = _this.data.other_cityPoints;
-    }
     
-    wx.showToast({
-      title: '加载中',
-      icon: 'loading',
-      duration: 10000
-    })
-
-    AppService.aroundSearch(this.data.destination,str,cityCode,this.data.page_num-1).then(res => {
-
-      let list=res.data.pois;
-      for(let i=0;i<list.length;i++){
-        console.log(list[i].distance/1000);
-        list[i].distance=list[i].distance/1000>=1?parseInt(list[i].distance/1000)+"km":parseInt(list[i].distance)+"m";
+    //_this.keywordsSearch(cityCode, str, _this.data.page_num-1);
+    
+    WxService.getLocation().then(res => {
+      console.log('getLocation',res);
+      _this.setData({
+        longitude: res.longitude,
+        latitude: res.latitude
+      });
+      console.log(this.data.longitude, this.data.latitude)
+      let x = this.data.longitude;
+      let y = this.data.latitude;
+      let str = "" + x + "," + y;
+      let cityCode = _this.data.cityCode;
+      if (_this.data.other_cityCode) {
+        cityCode = _this.data.other_cityCode;
+        //str = _this.data.other_cityPoints;
+      }
+      console.log(`这个cityCode是`, cityCode);
+      console.log('坐标点', str);
+      console.log('页数', _this.data.page_num);
+      wx.showToast({
+        title: '加载中',
+        icon: 'loading',
+        duration: 10000
+      })
+      return AppService.keywordsSearch(_this.data.destination, str, cityCode, this.data.page_num - 1);
+    }).then(res => {
+      console.log("sucess返回数据", res);
+      let list = res.data.pois;
+      for (let i = 0; i < list.length; i++) {
+        console.log(list[i].distance / 1000);
+        list[i].distance = list[i].distance / 1000 >= 1 ? parseInt(list[i].distance / 1000) + "km" : (parseInt(list[i].distance) < 10 ? "附近" : parseInt(list[i].distance) + "m");
       }
       _this.setData({
-        destinationList:list,
-        page_num:_this.data.page_num-1
+        destinationList: list,
+        page_num: _this.data.page_num - 1
       });
-      
+
       wx.hideToast();
+      
     })
   },
   /**
@@ -189,32 +242,40 @@ Page({
    */
   nextPageEvent:function(){
     let _this=this;
-    let x = this.data.longitude;
-    let y = this.data.latitude;
-    let str = ""+x+","+y;
-    let cityCode = _this.data.cityCode;
-    if(_this.data.other_cityCode){
-      cityCode = _this.data.other_cityCode;
-      str = _this.data.other_cityPoints;
-    }
-    wx.showToast({
-      title: '加载中',
-      icon: 'loading',
-      duration: 10000
-    });
-    AppService.aroundSearch(this.data.destination,str,cityCode,this.data.page_num+1).then(res => {
-      console.log(`aroundSearch`,res);
-      let list=res.data.pois;
-      for(let i=0;i<list.length;i++){
-        console.log(list[i].distance/1000);
-        list[i].distance=list[i].distance/1000>=1?parseInt(list[i].distance/1000)+"km":parseInt(list[i].distance)+"m";
+    WxService.getLocation().then(res => {
+      _this.setData({
+        longitude: res.longitude,
+        latitude: res.latitude
+      });
+      let x = this.data.longitude;
+      let y = this.data.latitude;
+      let str = "" + x + "," + y;
+      let cityCode = _this.data.cityCode;
+      if (_this.data.other_cityCode) {
+        cityCode = _this.data.other_cityCode;
+        //str = _this.data.other_cityPoints;
+      }
+
+      wx.showToast({
+        title: '加载中',
+        icon: 'loading',
+        duration: 10000
+      })
+      return AppService.keywordsSearch(_this.data.destination, str, cityCode, this.data.page_num + 1);
+    }).then(res => {
+      console.log("sucess返回数据", res);
+      let list = res.data.pois;
+      for (let i = 0; i < list.length; i++) {
+        console.log(list[i].distance / 1000);
+        list[i].distance = list[i].distance / 1000 >= 1 ? parseInt(list[i].distance / 1000) + "km" : (parseInt(list[i].distance) < 10 ? "附近" : parseInt(list[i].distance) + "m");
       }
       _this.setData({
-        destinationList:list,
-        page_num:_this.data.page_num+1
+        destinationList: list,
+        page_num: _this.data.page_num + 1
       });
-      
+
       wx.hideToast();
+
     })
   },
   /**
@@ -254,6 +315,28 @@ Page({
       isShowTaost:false
     });
   },
+  correctionEvent:function(e){
+    let _this = this;
+    console.log(e.target.dataset.index);
+
+    let index = e.target.dataset.index;
+    let value = this.data.otherDataList[index];
+    _this.setData({
+      destination:value,
+    })
+    wx.setNavigationBarTitle({ title: value })
+    let x = this.data.longitude;
+    let y = this.data.latitude;
+
+    let str = "" + x + "," + y;
+
+    let cityCode = _this.data.cityCode;
+
+    _this.keywordsSearch(cityCode, str, _this.data.page_num,value);
+    _this.setData({
+      otherDataList: []
+    })
+  },
   currentCityEvent: function(){
     let _this = this;
 
@@ -266,31 +349,34 @@ Page({
     let cityCode = _this.data.cityCode;
     _this.keywordsSearch(cityCode,str,_this.data.page_num);
   },
-  suggestCityEvent:function(){
+  citiesEvent:function(e){
     let _this = this;
     let x = this.data.longitude;
     let y = this.data.latitude;
     let str = "" + x + "," + y;
-    let cityCode = _this.data.suggestCities[_this.data.suggestCityIndex].adcode;
+    let index = e.target.dataset.index;
+    let cityCode = _this.data.cities[index].adcode;
     _this.keywordsSearch(cityCode, str, _this.data.page_num);
 
     this.setData({
-      suggestCities: [],
+      cities: [],
       hasOther: false
     });
   },
-  otherCityEvent: function(){
+  suggestCityEvet: function(){
     let _this = this;
 
     let x = this.data.longitude;
     let y = this.data.latitude;
     let str = ""+x+","+y;
-    this.setData({
-      destination: _this.data.other_detailCityName,
-      hasOther: false
-    });
+    // this.setData({
+    //   destination: _this.data.other_detailCityName,
+    // });
     let cityCode = _this.data.other_cityCode;
-    console.log(`这个cityCode是`,cityCode)
+    console.log(`这个cityCode是`,cityCode);
+    console.log('坐标点',str);
+    console.log('页数', _this.data.page_num)
+    console.log('查询的关键字',this.data.destination);
     _this.keywordsSearch(cityCode,str,_this.data.page_num);
   }
 })

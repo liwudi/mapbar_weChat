@@ -47,8 +47,6 @@ Page({
   onShow: function(options){
     
     var _this = this;
-    
-    console.log(`执行onshow`)
     AppService.getUserInfo().then(res => {
       console.log(res);
       if(res.statusCode == 200){
@@ -65,8 +63,24 @@ Page({
       }
     }).catch(err =>{
       console.log(err);
-      console.log('我在这里提示！');
-      WxService.showModal('温馨提示', '授权后才能使用图吧小程序哦！请删除，重新添加图吧小程序进行授权。', false);
+      /**
+       * @service 获取网络状态，如果网络没问题，就是用户授权未开启
+       */
+      WxService.getNetworkType().then(res => {
+        console.log('获取的网络状态',res);
+        if(res !== 'none'){
+          WxService.showSetModal('用户信息');
+        }else{
+          /**
+           * @info: 如果网络有问题，就给出提示信息
+           */
+          wx.showToast({
+            title: '请检查您的网络问题',
+            icon: 'loading',
+            duration: 2000
+          })
+        }
+      })
     })
   },
  

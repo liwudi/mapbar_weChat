@@ -57,6 +57,9 @@ Page({
       suggestList:[]
     });
   },
+  /**
+   * @introduction: 以下为各种事件。
+   */
   /*
   页面核心函数
   函数名：inputEvent
@@ -103,6 +106,7 @@ Page({
       });
     }
   },
+  
   /*
   页面核心函数
   函数名：searchEvent

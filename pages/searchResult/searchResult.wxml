@@ -1,54 +1,7 @@
 <!--pages/searchResult/searchResult.wxml-->
-<view class="container" wx:if="{{!hasOther}}">
-    <view class="city-chioce common-box" wx:if="{{suggestCities.length}}">
-        <view class="city-chioce-text-box common-text-box">
-            <text class="your-find-text common-text">请在下列城市中选择</text>
-        </view>
-        <view class="city-list common-list"  wx:for="{{suggestCities}}">
-            <view class="city-list common-list" bindtap="suggestCityEvent">
-                <view class="city-name">{{item.name}}</view>
-                <view class="city-chioce-image-box">
-                    <image class="set-destination-image " src="../resouces/myicon/more.png"></image>
-                </view>
-            </view>     
-        </view>
-    </view>
-    <view class="next-page center" wx:if="{{page_num>1}}" bindtap="prePageEvent">
-        <text class="text-color" >上一页</text>
-    </view>
-    <view class="searchresult" wx:for="{{destinationList}}">
-        <view class="item my-item" bindtap="tapEvent" id="{{index}}">
-            <view class="left-number">
-                <view class="left-cicle center">
-                    {{index+1}}
-                </view>
-            </view>
-            <view class="middle-content">
-                <text class="content-text1">{{item.name}}</text>
-                <text class="content-text2">{{item.address}}</text>
-            </view>
-            <view class="right-position">{{item.direct}}{{item.distance}}</view>
-        </view>
-        <view class="target-select">
-            <view class="select-map" data-target="{{index}}" bindtap="selectedMapEvent">
-                <image class="watchMap-image" src="../resouces/myicon/watchMap.png"></image>
-                <text class="watchMap-text">看地图</text>
-            </view>
-            <view class="select-me" data-target="{{index}}"  bindtap="selectedDestinationEvent">
-                <image class="set-destination-image" src="../resouces/myicon/end.png"></image>
-                <text class="watchMap-text">设终点</text>
-            </view>
-            <view class="split"></view>
-        </view>
-    </view>
-    <view class="next-page center">
-        <text class="text-color"   bindtap="nextPageEvent"  wx:if="{{!(target_num/10<=page_num)}}">下一页</text>
-        <text class="text-color" wx:if="{{target_num/10<=page_num}}">没有更多了</text>
-    </view>
-</view>
-<!--其他城市查询结果-->
-<view class="container" wx:if="{{hasOther}}">
-    <view class="toast" wx:if="{{isShowTaost}}">
+<view class="container">
+    <!--城市跳转-->
+    <view wx:if="{{hasOther && isShowTaost}}" class="toast">
         <text>已跳转至{{other_cityName}},还可以返回{{currentCity}}</text><text class="search-color" bindtap="currentCityEvent">查看结果</text>
         
         <view bindtap="clearEvent" class="x-icon cicle">
@@ -56,24 +9,76 @@
           <view class="cancel-clomn"></view>
         </view>
     </view>
-    <view class="your-find common-box">
+    <!--城市纠错 -->
+    <view wx:if="{{otherDataList.length}}" class="your-find common-box">
         <view class="your-find-text-box  common-text-box">
             <text class="your-find-text common-text">您是不是要找</text>
         </view>
-        <view class="find-list common-list">
-            {{other_cityName}}
+        <view wx:for="{{otherDataList}}" wx:key="{{index}}" data-index="{{index}}" class="find-list common-list" bindtap="correctionEvent">
+            {{item}}
         </view>
     </view>
-    <view class="city-chioce common-box">
+    <!--城市建议-->
+    <view wx:if="{{suggestCities.length}}" class="city-chioce common-box">
         <view class="city-chioce-text-box common-text-box">
             <text class="your-find-text common-text">请在下列城市中选择</text>
         </view>
-        <view class="city-list common-list" bindtap="otherCityEvent">
-            <view class="city-name">{{other_detailCityName}}</view>
+        <view class="city-list common-list" bindtap="suggestCityEvet" wx:for="{{suggestCities}}">
+            <view class="city-name">{{item.name}}</view>
             <view class="city-chioce-image-box">
                 <image class="set-destination-image " src="../resouces/myicon/more.png"></image>
             </view>
         </view>
+    </view>
+    <!--城市分布-->
+    <view wx:if="{{cities.length}}" class="city-chioce common-box">
+        <view class="city-chioce-text-box common-text-box">
+            <text class="your-find-text common-text">请在下列城市中选择</text>
+        </view>
+        <view wx:for="{{cities}}">
+        <view class="city-list common-list" data-index="{{index}}" bindtap="citiesEvent">
+            <view class="city-name">{{item.name}}({{item.num}})</view>
+            <view class="city-chioce-image-box">
+                <image class="set-destination-image " src="../resouces/myicon/more.png"></image>
+            </view>
+        </view>     
+        </view>
+    </view>
+    
+    <!--展示poi点-->
+    <view wx:if="{{destinationList.length}}">
+      <view class="next-page center" wx:if="{{page_num>1}}" bindtap="prePageEvent">
+          <text class="text-color" >上一页</text>
+      </view>
+      <view class="searchresult" wx:for="{{destinationList}}">
+          <view class="item my-item" bindtap="tapEvent" id="{{index}}">
+              <view class="left-number">
+                  <view class="left-cicle center">
+                      {{index+1}}
+                  </view>
+              </view>
+              <view class="middle-content">
+                  <text class="content-text1">{{item.name}}</text>
+                  <text class="content-text2">{{item.address}}</text>
+              </view>
+              <view class="right-position">{{item.direct}}{{item.distance}}</view>
+          </view>
+          <view class="target-select">
+              <view class="select-map" data-target="{{index}}" bindtap="selectedMapEvent">
+                  <image class="watchMap-image" src="../resouces/myicon/watchMap.png"></image>
+                  <text class="watchMap-text">看地图</text>
+              </view>
+              <view class="select-me" data-target="{{index}}"  bindtap="selectedDestinationEvent">
+                  <image class="set-destination-image" src="../resouces/myicon/end.png"></image>
+                  <text class="watchMap-text">设终点</text>
+              </view>
+              <view class="split"></view>
+          </view>
+      </view>
+      <view class="next-page center">
+          <text class="text-color"   bindtap="nextPageEvent"  wx:if="{{!(target_num/10<page_num)}}">下一页</text>
+          <text class="text-color" wx:if="{{target_num/10<page_num}}">没有更多了</text>
+      </view>
     </view>
 </view>
 

@@ -76,7 +76,7 @@ Page({
   getUsersList: function(){
     let _this = this;
     AppService.getUsersList(_this.data.groupId,1).then(res => {
-      console.log(res);
+      console.log('usersList11111111111111111111111111111111111111111',res);
       let list = res.data.data;
       let mylist = list.map((item, i) => {
         return {
@@ -100,6 +100,9 @@ Page({
         // history_distance:mySelf.totalDistance==null?0:mySelf.totalDistance.toFixed(3),
 
         this_distance:(mySelf.distance/1000).toFixed(1),
+        /**
+         * @todo:这个地方是需要改的，也是我们的用时一直改变的原因！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+         */
         this_time:((mySelf.updateTime-mySelf.creatTime)/60000).toFixed(1),
         average_speed:((mySelf.distance/((mySelf.updateTime-mySelf.creatTime)/1000))*3.6).toFixed(2),
         max_speed:mySelf.speedMax.toFixed(1),
@@ -108,6 +111,9 @@ Page({
     })
 
   },
+  /**
+   * @function reGetRoute 界面重新算路
+   */
   reGetRoute: function(){
     let _this=this;
     console.log(`reGetRoute`);
