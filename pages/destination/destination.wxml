@@ -14,11 +14,14 @@
                     <text class="distination">目的地<text class="main-color">{{destination}}</text></text>
                 </view>
                 <view class="content-bottom">
-                    <view class="content-bottom-left">
+                    <view wx:if="{{!my_isOver}}" class="content-bottom-left">
                         <text>距目的地</text>
                         <text class="main-color">{{mydistance}}</text>
                         <text>公里，</text>
                         <text class="main-color">{{mytime}}</text>
+                    </view>
+                    <view wx:if="{{my_isOver}}" class="content-bottom-left">
+                        <text class="hasReached">已到达</text>
                     </view>
                     <view class="content-bottom-right">
                         <text></text>
@@ -50,12 +53,15 @@
                     <text class="distination right-distination">{{item.updateTime}}</text>
                 </view>
                 <view class="content-bottom">
-                    <view class="content-bottom-left">
+                    <view wx:if="{{!item.isOver}}" class="content-bottom-left">
                         <text>距目的地</text>
                         <text class="main-color">{{item.distanceSurplus}}</text>
                         <text>公里，</text>
                         <text class="main-color">{{item.surplusTime}}</text>
                         
+                    </view>
+                    <view wx:if="{{item.isOver}}" class="content-bottom-left">
+                        <text class="hasReached">已到达</text> 
                     </view>
                     <view class="content-bottom-right">
                         <text class="speed-value">{{item.speed}}km/h</text>
@@ -93,12 +99,15 @@
                             <text class="distination right-distination">{{item.updateTime}}</text>
                         </view>
                         <view class="content-bottom">
-                            <view class="content-bottom-left">
+                            <view wx:if="{{!item.isOver}}" class="content-bottom-left">
                                 <text>距目的地</text>
                                 <text class="main-color">{{item.distanceSurplus}}</text>
                                 <text>公里，</text>
                                 <text class="main-color">{{item.surplusTime}}</text>
                                 
+                            </view>
+                            <view wx:if="{{item.isOver}}" class="content-bottom-left">
+                                <text class="hasReached">已到达</text>
                             </view>
                             <view class="content-bottom-right">
                                 <text class="speed-value">{{item.speed}}km/h</text>

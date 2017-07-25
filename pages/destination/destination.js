@@ -47,6 +47,7 @@ Page({
     mydistance:``,
     mytime:``,
     myspeed:``,
+    my_isOver: 0,
     usersList:null,
     userNumber:0,
     //options传递参数
@@ -365,10 +366,11 @@ Page({
       })
       let users = res.data.data;
       _this.users = res.data.data;
+      let personNumber = users.length;
       _this.setData({
           groupName: res.data.groupname
       });
-      wx.setNavigationBarTitle({title: res.data.groupname});
+      wx.setNavigationBarTitle({ title: res.data.groupname + "(" + personNumber+")"});
       //console.log('users', users);
 
       users.map((item,i) => {
@@ -392,7 +394,8 @@ Page({
               mydistance: mySelf.distanceSurplus.toFixed(1),
               mytime: (parseInt(mySelf.surplusTime / 60/60) < 1)?parseInt(mySelf.surplusTime / 60) + "分钟":parseInt(mySelf.surplusTime / 60/60) + "小时" + parseInt(mySelf.surplusTime / 60%60) + "分钟",
               myspeed: parseInt(mySelf.speed),
-              my_tag_url: `../resouces/voice/avatar_tag${mySelf.index+1}.png`
+              my_tag_url: `../resouces/voice/avatar_tag${mySelf.index+1}.png`,
+              my_isOver: mySelf.isOver
           });
           if (mySelf.isOver) {
               WxService.navigateTo(`../successes/successes?groupId=${_this.data.groupId}&userId=${_this.data.userInfo.userId}&lat=${_this.data.my_lat}&lon=${_this.data.my_lon}&deslon=${_this.data.destlon}&deslat=${_this.data.destlat}&destination=${_this.data.destination}`,() => {
@@ -434,10 +437,15 @@ Page({
       }
    
     }).catch(error => {
-      wx.showToast({
-        title: "您的网络不稳定！",
-        icon: "loading"
-      })
+      common.dealCatch(function(){
+        WxService.showModal('温馨提示','此群已解散',false);
+      },function(){
+        wx.showToast({
+          title: '路线计算失败，请检网络后重试！',
+          icon: 'loading',
+          duration: 2000
+        })
+      });
     });
   },
   onmessage: function(){
@@ -458,8 +466,8 @@ Page({
         if(app.globalData.isAutoPlay){
           _this.playVoice();
         }else{
-          _this.data.voice_number++;
-          _this.setData({
+          (content.data.userid != _this.data.userInfo.userId) && _this.data.voice_number++;
+          (content.data.userid != _this.data.userInfo.userId) && _this.setData({
             voice_number:_this.data.voice_number
           })
         }
@@ -570,7 +578,9 @@ Page({
   },
   chatEvent: function(){
     let _this = this;
-    
+    _this.setData({
+      voice_number: 0
+    })
     WxService.navigateTo(`../chat/chat?groupId=${_this.data.groupId}&groupName=${_this.data.groupName}&isGroupHost=${_this.data.isGroupHost}`);
   },
   

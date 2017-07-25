@@ -57,13 +57,14 @@ map{
     white-space: nowrap;
 }
 .point-content{
-    width: 100%;
+    width: 500rpx;
     height: 40rpx;
     font-size: 26rpx;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    
     color: #999999;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .set-position{
     width: 100%;

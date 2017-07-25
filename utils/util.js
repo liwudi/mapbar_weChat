@@ -1,4 +1,4 @@
-
+let WxService = require('../service/WxService');
 let systemInfo = {
     "model":"iPhone 6",
     "pixelRatio":2,
@@ -51,8 +51,27 @@ function getNowDate(s = new Date().getTime()) {
     return CurrentDate;
 }
 
+function dealCatch(callback,next){
+  WxService.getNetworkType().then(res => {
+    console.log('获取的网络状态', res);
+    if (res !== 'none') {
+      callback();
+    } else {
+      /**
+       * @info: 如果网络有问题，就给出提示信息
+       */
+      next && next();
+      !next && wx.showToast({
+        title: '请检查您的网络问题',
+        icon: 'loading',
+        duration: 2000
+      })
+    }
+  })
+}
+
 module.exports = {
   systemInfo,
   getNowDate,
-  
+  dealCatch,
 }

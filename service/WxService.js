@@ -71,7 +71,20 @@ let getLocation = () => {
                 },
                 fail: (err) => {
                   reject(err);
-                  showSetModal('地理位置')
+                  getNetworkType().then(res => {
+                    if (res !== 'none') {
+                      showSetModal('地理位置')
+                    } else {
+                      /**
+                       * @info: 如果网络有问题，就给出提示信息
+                       */
+                      wx.showToast({
+                        title: '请检查您的网络问题',
+                        icon: 'loading',
+                        duration: 2000
+                      })
+                    }
+                  })
                 }
             })
         }
@@ -106,17 +119,6 @@ let redirectTo = (url,success,fail) => {
     })
 }
 
-let showModal = (title,content,isShowCancel,next) => {
-    wx.showModal({
-        title: title,
-        content: content,
-        success: function (res){
-            if(res.confirm) {
-                next&&next();
-            }
-        }
-    })
-}
 
 
 let startRecord = () => {
@@ -234,6 +236,19 @@ let showSetModal = (title) => {
         }
       }
     })
+  })
+}
+
+let showModal = (title, content, isShowCancel, next) => {
+  wx.showModal({
+    title: title,
+    content: content,
+    showCancel: isShowCancel || true,
+    success: function (res) {
+      if (res.confirm) {
+        next && next();
+      }
+    }
   })
 }
 
