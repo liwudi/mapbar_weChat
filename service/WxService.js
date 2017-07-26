@@ -221,8 +221,11 @@ let getNetworkType = () => {
     })
   })
 }
+/**
+ * @introduction:界面交互相关
+ */
 
-//showSetModal
+//提示授权问题
 let showSetModal = (title) => {
   return new Promise((resolve, reject) => {
     wx.showModal({
@@ -239,6 +242,7 @@ let showSetModal = (title) => {
   })
 }
 
+//弹窗设置
 let showModal = (title, content, isShowCancel, next) => {
   wx.showModal({
     title: title,
@@ -250,6 +254,18 @@ let showModal = (title, content, isShowCancel, next) => {
       }
     }
   })
+}
+
+//提示加载
+let showLoading = (title,isMask) => {
+  wx.showLoading({
+    title: title || '加载中',
+    mask: isMask || true,
+  });
+}
+
+let hideLoading = () => {
+  wx.hideLoading();
 }
 
 module.exports = {
@@ -271,5 +287,8 @@ module.exports = {
     upLoadFile,
     downloadFile,
 
-    getNetworkType
+    getNetworkType,
+
+    showLoading,
+    hideLoading
 }

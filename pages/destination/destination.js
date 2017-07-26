@@ -158,6 +158,10 @@ Page({
 
     _this.socketCatch();
   },
+  /**
+   * @function socketCatch
+   * 当socket出现异常关闭的情况或者错误的情况，就重新连接socket。
+   */
   socketCatch: function(){
     let _this = this;
     wx.onSocketError(res => {
@@ -176,6 +180,10 @@ Page({
   onHide:function(){
     
   },
+  /**
+   * @function onUnload
+   * 页面生命周期函数，在页面卸载时，清除定时器。
+   */
   onUnload:function(){
     let _this = this;
     _this.isUnLoad = true;
@@ -209,15 +217,17 @@ Page({
    * 第一次画路线
    */
   getRoute: function(){
+    WxService.showLoading()
     let _this = this;
     WxService.getLocation().then(res => {
-      //console.log(res);
+      
       _this.setData({
         origin_lat:res.latitude,
         origin_lon:res.longitude
       });
+
       let [lat,lon,destlon,destlat,groupid] = [res.latitude,res.longitude,_this.data.destlon,_this.data.destlat,_this.data.groupId];
-      console.log(`第一次画路线`,lat,lon,destlon,destlat,groupid);
+      
       AppService.nav({
         lat:lat,
         lon:lon,
@@ -226,9 +236,10 @@ Page({
         groupid:groupid,
         userid:_this.data.userInfo.userId
       }).then(res => {
-        console.log('第一次画路线结果',res);
+        
         let data = res.data.data.routelatlon;
         _this.dealRouteData(data);
+        WxService.hideLoading();
          markers = _this.data.markers;
          //上传坐标点
          _this.getLocation();
@@ -243,7 +254,8 @@ Page({
     })
   },
   /**
-   * 每60s重新算路
+   * @function reGetRoute
+   * 调用导航，获取坐标点串，然后调用dealRouteData()把坐标点串描绘在地图上。
    */
   reGetRoute: function(){
     let _this = this;
@@ -276,6 +288,7 @@ Page({
    * 处理数据
    * 把字符串坐标点处理之后画到地图上
    * @param data-坐标点串
+   * @where 在函数getRoute()和reGetRoute()中引用。
    */
   dealRouteData: function(data){
     let _this = this;
