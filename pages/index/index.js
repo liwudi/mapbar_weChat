@@ -41,6 +41,9 @@ Page({
     isNumberShow: false,//确认电话号码是否有输入
     isCodeShow: false,//确认验证码是否有输入
     isNumberWrong:false,
+
+    ismaxDistance: false,
+    istotalDistance: false
   },
 
 
@@ -48,16 +51,28 @@ Page({
     
     var _this = this;
     AppService.getUserInfo().then(res => {
-      console.log(res);
+      console.log('获取用户信息',res);
       if(res.statusCode == 200){
-        res.data.user.maxDistance = (res.data.user.maxDistance == null)? 0 : res.data.user.maxDistance.toFixed(2);
-        res.data.user.totalDistance = (res.data.user.totalDistance == null) ? 0 : res.data.user.totalDistance.toFixed(2);
+        res.data.user.maxDistance = (res.data.user.maxDistance == null)? 0 : (res.data.user.maxDistance*1000).toFixed(0);
+        res.data.user.totalDistance = (res.data.user.totalDistance == null) ? 0 : (res.data.user.totalDistance*1000).toFixed(0);
+        if (res.data.user.maxDistance > 1000){
+          res.data.user.maxDistance = (res.data.user.maxDistance/1000).toFixed(1);
+          _this.setData({
+            ismaxDistance: true
+          })
+        }
+        if (res.data.user.totalDistance > 1000) {
+          res.data.user.totalDistance = (res.data.user.totalDistance / 1000).toFixed(1);
+          _this.setData({
+            istotalDistance: true
+          })
+        }
         //缓存全局userid，在适当的时候使用，可减少http请求。
         app.globalData.userInfo = res.data.user;
         _this.setData({
             userInfo: res.data.user,
             isbind: res.data.user.userPhone,
-            groupList: res.data.groupList,
+            groupList: res.data.groupList.reverse(),
             groupNumber: res.data.groupList.length
         })
       }

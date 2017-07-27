@@ -44,7 +44,7 @@
 
 
     <view class="user-info">
-      <view class="single-distance">
+      <view class="single-distance" wx:if="{{ismaxDistance}}">
         <view class="text1">
           <text class="target-color target-size left-number">{{userInfo.maxDistance}}</text>
           <text class="right-text">公里</text>
@@ -56,10 +56,34 @@
           <text>的用户</text>
         </view>-->
       </view>
-      <view class="all-distance">
+      <view class="single-distance" wx:if="{{!ismaxDistance}}">
+        <view class="text1">
+          <text class="target-color target-size left-number">{{userInfo.maxDistance}}</text>
+          <text class="right-text">米</text>
+        </view>
+        <view class="text2">单次最远</view>
+        <!--<view class="text3">
+          <text>超过</text>
+          <text class="target-color">{{percentSD}}</text>
+          <text>的用户</text>
+        </view>-->
+      </view>
+      <view class="all-distance" wx:if="{{istotalDistance}}">
         <view class="text1">
           <text class="target-color target-size left-number">{{userInfo.totalDistance}}</text>
           <text class="right-text">公里</text>
+        </view>
+        <view class="text2">累计里程</view>
+        <!--<view class="text3">
+          <text>超过</text>
+          <text class="target-color">{{percentAD}}</text>
+          <text>的用户</text>
+        </view>-->
+      </view>
+      <view class="all-distance" wx:if="{{!istotalDistance}}">
+        <view class="text1">
+          <text class="target-color target-size left-number">{{userInfo.totalDistance}}</text>
+          <text class="right-text">米</text>
         </view>
         <view class="text2">累计里程</view>
         <!--<view class="text3">
