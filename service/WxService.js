@@ -125,7 +125,23 @@ let startRecord = () => {
     return new Promise((resolve, reject) => {
         wx.startRecord({
           success: resolve,
-          fail: reject
+          fail: function(err){
+            reject(err);
+            getNetworkType().then(res => {
+              if (res !== 'none') {
+                showSetModal('录音功能');
+              } else {
+                /**
+                 * @info: 如果网络有问题，就给出提示信息
+                 */
+                wx.showToast({
+                  title: '请检查您的网络问题',
+                  icon: 'loading',
+                  duration: 2000
+                })
+              }
+            })
+          }
         })
     })
 }
@@ -241,16 +257,17 @@ let showSetModal = (title) => {
     })
   })
 }
-
+let isShowModal = false;
 //弹窗设置
 let showModal = (title, content, isShowCancel, next) => {
-  wx.showModal({
+  !isShowModal && (isShowModal = true) && wx.showModal({
     title: title,
     content: content,
     showCancel: isShowCancel || true,
     success: function (res) {
       if (res.confirm) {
         next && next();
+        isShowModal = false
       }
     }
   })

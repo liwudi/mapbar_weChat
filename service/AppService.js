@@ -45,10 +45,22 @@ function setUserInfo(userInfo){
 
 
 function getUserInfo(){
+    
     return WxService.wxCheckSession().then(() => {
         if(userInfo&&userId&&userName&&userImg){
             console.log(`再次登陆`)
-            return getGroupList()
+            return WxService.wxUserInfo().then(res => {
+              console.log('先获取用户头像等信息',res.userInfo);
+              userInfo.userImg = res.userInfo.avatarUrl;
+              setUserInfo(userInfo);
+            }).then(()=>{
+              console.log(`then中获取群组列表`)
+              return getGroupList()
+            }).catch((err)=>{
+              console.log(`catch中获取群组列表`)
+              return getGroupList()
+            })
+            
         }else{
             return WxService.wxLogin().then((res) => {
                 console.log(`首次登陆${res.code}`)
@@ -95,6 +107,7 @@ function getUserId(code, avatarUrl, nickName){
 }
 
 function getGroupList(){
+
     return BaseService.get(
         `${Config.main_url}/wxGroup/login.json`,
         {

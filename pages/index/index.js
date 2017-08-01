@@ -48,7 +48,7 @@ Page({
 
 
   onShow: function(options){
-    
+    wx.setNavigationBarTitle({ title: '图吧同行' });
     var _this = this;
     AppService.getUserInfo().then(res => {
       console.log('获取用户信息',res);

@@ -104,18 +104,17 @@ Page({
         return _this.getRoute();
       }
     }).then(res => {
+      //表示加群之后，重新获取用户信息，主要获取群列表信息
+      return AppService.getUserInfo();
       
-      AppService.getUserInfo().then(res => {
-        
-        if(res.statusCode == 200){
-          _this.setData({
-            userInfo: res.data.user,
-            groupList: res.data.groupList,
-          });
-        }
-        _this.dataDeal();
-      });
-      
+    }).then(res => {
+      if (res.statusCode == 200) {
+        _this.setData({
+          userInfo: res.data.user,
+          groupList: res.data.groupList,
+        });
+      }
+      _this.dataDeal();
     });
 
     !options.isShare && AppService.getUserInfo().then(res => {
@@ -383,7 +382,7 @@ Page({
       _this.setData({
           groupName: res.data.groupname
       });
-      wx.setNavigationBarTitle({ title: res.data.groupname + "(" + personNumber+")"});
+      wx.setNavigationBarTitle({ title: res.data.groupname + "(" + personNumber+"人)"});
       //console.log('users', users);
 
       users.map((item,i) => {
@@ -479,10 +478,14 @@ Page({
         if(app.globalData.isAutoPlay){
           _this.playVoice();
         }else{
-          (content.data.userid != _this.data.userInfo.userId) && _this.data.voice_number++;
-          (content.data.userid != _this.data.userInfo.userId) && _this.setData({
+          (content.data.userid != _this.data.userInfo.userId) && (_this.data.voice_number=parseInt(_this.data.voice_number)+1);
+          (content.data.userid != _this.data.userInfo.userId) && (_this.data.voice_number <= 99) && _this.setData({
             voice_number:_this.data.voice_number
           })
+          (content.data.userid != _this.data.userInfo.userId) && (_this.data.voice_number > 99) && _this.setData({
+            voice_number: "99+"
+          })
+          
         }
       }
     });
