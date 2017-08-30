@@ -18,6 +18,7 @@
     <view wx:if="{{!isGroupHost}}" class="my-handle center common" bindtap="confirmEvent">退出群组</view>
 </view>
 <modal class="modal" hidden="{{modalHidden}}"  bindconfirm="modalChange" bindcancel="modalCancel">
+
     <view class="title"> 修改群名称 </view>
     
     <view class="modal-content">

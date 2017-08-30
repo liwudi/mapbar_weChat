@@ -13,7 +13,7 @@
     </view>
   </view>
   <!--首次登陆展示-->
-  <view class="list-box" wx:if="{{groupList.length === 0}}">
+  <scroll-view scroll-y style="height:{{windowHeight}};" class="list-box" wx:if="{{groupList.length === 0}}">
     <view class="list-top">
       <text class="center list-text">快来设置目的地分享给好友</text>
       <text class="center list-text">一起组队出发吧</text>
@@ -32,7 +32,7 @@
         <text class="help-text center">帮助</text>
       </view>
     </view>
-  </view>
+  </scroll-view>
   <!--再次登陆展示-->
   <view class="second-login"  wx:if="{{groupList.length > 0}}">
     <view class="user-name">
@@ -50,11 +50,6 @@
           <text class="right-text">公里</text>
         </view>
         <view class="text2">单次最远</view>
-        <!--<view class="text3">
-          <text>超过</text>
-          <text class="target-color">{{percentSD}}</text>
-          <text>的用户</text>
-        </view>-->
       </view>
       <view class="single-distance" wx:if="{{!ismaxDistance}}">
         <view class="text1">
@@ -62,11 +57,6 @@
           <text class="right-text">米</text>
         </view>
         <view class="text2">单次最远</view>
-        <!--<view class="text3">
-          <text>超过</text>
-          <text class="target-color">{{percentSD}}</text>
-          <text>的用户</text>
-        </view>-->
       </view>
       <view class="all-distance" wx:if="{{istotalDistance}}">
         <view class="text1">
@@ -74,11 +64,6 @@
           <text class="right-text">公里</text>
         </view>
         <view class="text2">累计里程</view>
-        <!--<view class="text3">
-          <text>超过</text>
-          <text class="target-color">{{percentAD}}</text>
-          <text>的用户</text>
-        </view>-->
       </view>
       <view class="all-distance" wx:if="{{!istotalDistance}}">
         <view class="text1">
@@ -86,11 +71,6 @@
           <text class="right-text">米</text>
         </view>
         <view class="text2">累计里程</view>
-        <!--<view class="text3">
-          <text>超过</text>
-          <text class="target-color">{{percentAD}}</text>
-          <text>的用户</text>
-        </view>-->
       </view>
       <view class="all-city">
         <view class="text1">
@@ -98,16 +78,13 @@
           <text class="right-text">个城市</text>
         </view>
         <view class="text2">足迹遍布</view>
-        <!--<view class="text3">
-          <text>超过</text>
-          <text class="target-color">{{percentAC}}</text>
-          <text>的用户</text>
-        </view>-->
       </view>
     </view>
+    <view class="padding-container">
+    </view>
+    <view class="padding-border"></view>
 
-
-    <view class="user-group">
+    <scroll-view scroll-y style="height:{{listHeight}};" class="user-group">
       <view class="group-item" wx:for="{{groupList}}" data-id="{{index}}" bindtap="enterGroupEvent">
         <view class="group-left center">
           <image class="group-left-image" src="../resouces/myicon/grouped.png"></image>
@@ -117,43 +94,31 @@
           <image class="group-right-image" src="../resouces/myicon/more.png"></image>
         </view>
       </view>
-    </view>
-    <view class="list-bottom center">
-      <view class="help-box" bindtap="helpEvent">
-        <image class="help-icon" src="../resouces/myicon/help.png"></image>
-        <text class="help-text center">帮助</text>
+      <view class="list-bottom center">
+        <view class="help-box" bindtap="helpEvent">
+          <image class="help-icon" src="../resouces/myicon/help.png"></image>
+          <text class="help-text center">帮助</text>
+        </view>
       </view>
-    </view>
+    </scroll-view> 
   </view>
-  <!--<modal class="modal" title="绑定手机号" wx:if="{{userInfo.userId && !isbind}}" cancel mask bindconfirm="modalConfirmEvent" bindcancel="modalCancelEvent">
-    <view class="number-box">
+  <!--底部输入群号码布局-->
+  <view style="background-color: {{color}}" bindtouchstart="touchStartEvent" bindtouchend="touchEndEvent" class="search-group center">
+    <text>输入已有群号码，快速加入群组导航></text>
+  </view>
+</view>
+<modal hidden="{{modalHidden}}"  bindconfirm="modalChange" bindcancel="modalCancel">
+    <view class="title"> 输入群号码 </view>
+    <view class="modal-content">
       <view  class="input-number">
-        <input class="my-input" value="{{number_value}}" bindinput="inputNumberEvent"  type="text" placeholder="请输入电话号码" />
+        <input class="modal-input" placeholder="请输入群号码" value="{{inputValue}}" bindinput="inputEvent"  type="text"  />
       </view>
-      <view bindtap="clearNumberEvent" wx:if="{{isNumberShow}}" class="content-cancel number-cancel">
+      <view bindtap="clearContentEvent"  wx:if="{{isShowName}}" class="content-cancel number-cancel">
         <view class="cancel-row"></view>
         <view class="cancel-clomn"></view>
       </view>
     </view>
-    
-    <view class="your-code-box">
-      <view class="identify-code">
-        <view class="input-code">
-          <input class="my-input" type="text" value="{{code_value}}" bindinput="inputCodeEvent" placeholder="验证码"/>
-        </view>
-        
-        <view bindtap="clearCodeEvent" wx:if="{{isCodeShow}}" class="content-cancel">
-          <view class="cancel-row"></view>
-          <view class="cancel-clomn"></view>
-        </view>
-      </view>
-      
-      <view wx:if="{{!isClickCode}}" bindtap="getCodeEvent" class="get-code center">获取验证码</view>
-      <view wx:if="{{isClickCode}}" class="get-code center code-color">还剩余{{rest_time}}秒</view>
-    </view>
-    <view class="right-code red-color" wx:if="{{isWrong}}">请输入正确的验证码！</view>
-  </modal>-->
-</view>
+</modal>
 
  
 

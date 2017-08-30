@@ -226,23 +226,27 @@ Page({
       });
 
       let [lat,lon,destlon,destlat,groupid] = [res.latitude,res.longitude,_this.data.destlon,_this.data.destlat,_this.data.groupId];
-      
+      console.log('第一次画线', lat, lon, destlon, destlat, groupid);
       AppService.nav({
-        lat:lat,
-        lon:lon,
-        destlon:destlon,
-        destlat:destlat,
-        groupid:groupid,
-        userid:_this.data.userInfo.userId
+        lat: lat,
+        lon: lon,
+        destlon: destlon,
+        destlat: destlat,
+        groupid: groupid,
+        userid: _this.data.userInfo.userId
       }).then(res => {
         
         let data = res.data.data.routelatlon;
         _this.dealRouteData(data);
         WxService.hideLoading();
-         markers = _this.data.markers;
-         //上传坐标点
-         _this.getLocation();
+        markers = _this.data.markers;
+        //上传坐标点
+        _this.getLocation();
+      }).catch(err => {
+        console.log('未获取路况信息')
       })
+     
+      
     }).catch(error => {
       console.log(error);
       wx.showToast({
@@ -263,17 +267,22 @@ Page({
       console.log(res);
       let [lat,lon,destlon,destlat,groupid] = [res.latitude,res.longitude,_this.data.destlon,_this.data.destlat,_this.data.groupId];
       console.log('每60s重新算路',lat,lon,destlon,destlat,groupid);
+      
       AppService.nav({
-        lat:lat,
-        lon:lon,
-        destlon:destlon,
-        destlat:destlat,
-        groupid:groupid
+        lat: lat,
+        lon: lon,
+        destlon: destlon,
+        destlat: destlat,
+        groupid: groupid
       }).then(res => {
         console.log(res);
         let data = res.data.data.routelatlon;
         _this.dealRouteData(data);
+      }).catch(err => {
+        console.log('未获取路况信息')
       })
+      
+      
     }).catch(error => {
       console.log(error);
       wx.showToast({
@@ -372,7 +381,7 @@ Page({
         }
         let theGroup = _this.data.groupList.find(item => item.groupId == _this.data.groupId)
        
-        _this.setData({
+        theGroup && _this.setData({
             destination: theGroup.destName
         });
       })
@@ -450,7 +459,12 @@ Page({
    
     }).catch(error => {
       common.dealCatch(function(){
-        WxService.showModal('温馨提示','此群已解散',false);
+        WxService.hideLoading();
+        WxService.showModal('温馨提示','此群已解散',false,function(){
+          wx.navigateBack({
+            delta: 5
+          })
+        });
       },function(){
         wx.showToast({
           title: '路线计算失败，请检网络后重试！',

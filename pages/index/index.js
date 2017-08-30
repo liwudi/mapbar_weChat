@@ -5,6 +5,8 @@ const AppService = require(`../../service/AppService`);
 
 const app = getApp();
 
+const systemInfo = require(`../../utils/util`).systemInfo;
+
 Page({
   data: {
     array:[{
@@ -43,15 +45,37 @@ Page({
     isNumberWrong:false,
 
     ismaxDistance: false,
-    istotalDistance: false
+    istotalDistance: false,
+
+    windowHeight: (systemInfo.windowHeight * (750 / systemInfo.screenWidth) - 400)+'rpx',
+    listHeight: (systemInfo.windowHeight * (750 / systemInfo.screenWidth) - 738) + 'rpx',
+    color: "#f8f8f8",
+
+    //modal相关
+    modalHidden:true,
+    confirmData:null,
+    inputValue:""
   },
+  touchStartEvent:function() {
+    console.log('start');
 
-
+    this.setData({
+      color:"#aaaaaa",
+      modalHidden: false
+    })
+  },
+  touchEndEvent: function() {
+    console.log('end');
+    this.setData({
+      color: "#f8f8f8"
+    })
+  },
   onShow: function(options){
+    
     wx.setNavigationBarTitle({ title: '图吧同行' });
     var _this = this;
     AppService.getUserInfo().then(res => {
-      console.log('获取用户信息',res);
+      console.log('用户信息',res);
       if(res.statusCode == 200){
         res.data.user.maxDistance = (res.data.user.maxDistance == null)? 0 : (res.data.user.maxDistance*1000).toFixed(0);
         res.data.user.totalDistance = (res.data.user.totalDistance == null) ? 0 : (res.data.user.totalDistance*1000).toFixed(0);
@@ -77,12 +101,12 @@ Page({
         })
       }
     }).catch(err =>{
-      console.log(err);
+      
       /**
        * @service 获取网络状态，如果网络没问题，就是用户授权未开启
        */
       WxService.getNetworkType().then(res => {
-        console.log('获取的网络状态',res);
+        
         if(res !== 'none'){
           WxService.showSetModal('用户信息');
         }else{
@@ -158,7 +182,7 @@ Page({
       return
     }
     AppService.upLoadPin(_this.data.userInfo.userId,_this.data.code_value).then(res => {
-      console.log(res);
+      
       if(res.status==6001){
         _this.setData({
           isWrong:true
@@ -178,7 +202,7 @@ Page({
 
   getCodeEvent:function(){
     let _this=this;
-    console.log(this.data.number_value);
+
     this.setData({
       rest_time:60
     });
@@ -191,7 +215,7 @@ Page({
       });
     }else{
       AppService.pushSms(this.data.userInfo.userId,this.data.number_value).then(res => {
-        console.log(res);
+        
         _this.setData({
           isClickCode:!_this.data.isClickCode
         });
@@ -229,11 +253,13 @@ Page({
     let groupIndex = res.currentTarget.dataset.id;
     
     let groupId = this.data.groupList[groupIndex].groupId;
+   
     let isGroupHost = (String(_this.data.groupList[groupIndex].userId)==String(_this.data.userInfo.userId))?true:false;
     let lat = this.data.groupList[groupIndex].lat;
     let lon = this.data.groupList[groupIndex].lon;
 
     if(groupId){
+      
       WxService.navigateTo(`../destination/destination?groupId=${groupId}&isGroupHost=${isGroupHost}&lat=${lat}&lon=${lon}`);
     }
   },
@@ -242,6 +268,55 @@ Page({
       title: '图吧同行',
       path: '/pages/index/index'
     }
+  },
+  /**
+   * @todo:这里和创建群组相关
+   */
+  modalChange:function() {
+    let _this = this;
+    let isGroupHost = false;
+    for(let i = 0;i < _this.data.groupList.length; i++){
+      if (String(_this.data.groupList[i].userId) == String(_this.data.userInfo.userId)){
+        isGroupHost = true;
+        break;
+      }
+    }
+    let groupId = Number(this.data.confirmData);
+    if (groupId){
+      WxService.navigateTo(`../destination/destination?groupId=${groupId}&isGroupHost=${isGroupHost}`);
+      this.setData({
+        modalHidden: true
+      })
+    }else{
+      wx.showToast({
+        title: '请检查您的输入是否是数字',
+        icon: 'loading',
+        duration: 2000
+      })
+    }
+    
+  },
+  modalCancel: function () {
+    this.setData({
+      modalHidden: true
+    });
+  },
+  /**
+   * 函数名：inputEvent
+   * 作用：输入框的input事件，用于记录输入的字符串
+   */
+  inputEvent: function (event) {
+    this.setData({
+      confirmData: event.detail.value,
+      isShowName: event.detail.value ? true:false
+    });
+  },
+  
+  clearContentEvent: function () {
+    this.setData({
+      inputValue: ``,
+      isShowName: false
+    })
   }
 })
 

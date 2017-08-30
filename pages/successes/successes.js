@@ -21,9 +21,9 @@ Page({
     mySelf:null,
     myIndex:'',
     //地图信息
-    title:"翰林书画院",
-    distance:"距您您900m",
-    content:"北京市东城区东四十一条21号院",
+    title:"",
+    distance:"",
+    content:"",
     longitude:"113.3245211",
     latitude:"23.10229",
     polyline:[],
@@ -91,7 +91,7 @@ Page({
   getUsersList: function(){
     let _this = this;
     AppService.getUsersList(_this.data.groupId,1).then(res => {
-      console.log('usersList11111111111111111111111111111111111111111',res);
+      
       let list = res.data.data;
       let mylist = list.map((item, i) => {
         // 时间动态展示处理
