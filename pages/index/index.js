@@ -54,7 +54,11 @@ Page({
     //modal相关
     modalHidden:true,
     confirmData:null,
-    inputValue:""
+    inputValue:"",
+
+
+    //test
+    iosAndandroid:null
   },
   touchStartEvent:function() {
     console.log('start');
@@ -69,6 +73,12 @@ Page({
     this.setData({
       color: "#f8f8f8"
     })
+  },
+  onLoad: function (options) {
+    console.log('友盟传递参数',options);
+    if (options.groupId) {
+      this.getDataAndGotoDestination(options.groupId)
+    }
   },
   onShow: function(options){
     
@@ -269,9 +279,30 @@ Page({
       path: '/pages/index/index'
     }
   },
-  /**
-   * @todo:这里和创建群组相关
-   */
+  //用于处理ios和android分享的处理函数。
+  getDataAndGotoDestination(groupid){
+    let _this = this;
+    let isGroupHost = false;
+    for (let i = 0; i < _this.data.groupList.length; i++) {
+      if (String(_this.data.groupList[i].userId) == String(_this.data.userInfo.userId)) {
+        isGroupHost = true;
+        break;
+      }
+    }
+    let groupId = groupid;
+    if (groupId) {
+      WxService.navigateTo(`../destination/destination?groupId=${groupId}&isGroupHost=${isGroupHost}`);
+      this.setData({
+        modalHidden: true
+      })
+    } else {
+      wx.showToast({
+        title: '请检查您的输入是否是数字',
+        icon: 'loading',
+        duration: 2000
+      })
+    }
+  },
   modalChange:function() {
     let _this = this;
     let isGroupHost = false;

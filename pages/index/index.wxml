@@ -100,6 +100,9 @@
           <text class="help-text center">帮助</text>
         </view>
       </view>
+      <view class="classname" wx:if="{{iosAndandroid}}">
+          <text>{{iosAndandroid}}</text>
+      </view>
     </scroll-view> 
   </view>
   <!--底部输入群号码布局-->
