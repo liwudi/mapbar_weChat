@@ -39,6 +39,7 @@ let controlsArray = [{
 
 Page({
   data:{
+    arr:[1,2,3,4,5,6,7,8],
     userInfo:{},
     groupList:null,
     usersListTag: false,
@@ -57,7 +58,8 @@ Page({
     origin_lon:``,
     destlon:``,
     destlat:``,
-    
+    //第三版界面改版
+    myborderColor: '#3c78ff',
     //地图
     longitude:116.415079,
     latitude: 40.088899,
@@ -613,7 +615,19 @@ Page({
     })
     WxService.navigateTo(`../chat/chat?groupId=${_this.data.groupId}&groupName=${_this.data.groupName}&isGroupHost=${_this.data.isGroupHost}`);
   },
-  
+  selfEvent: function(){
+    this.setData({
+      myborderColor:'#3c78ff',
+      checkIndex: ''
+    });
+  },
+  usersItemEvent: function(e){
+    let index = 1;
+    this.setData({
+      myborderColor: '#cccccc',
+      checkIndex: index
+    });
+  },
   //上传语音相关
   touchStartEvent: function() {
     let _this = this;

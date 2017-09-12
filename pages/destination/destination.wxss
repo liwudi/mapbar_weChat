@@ -2,6 +2,7 @@
 page {
   background-color: #ffffff;
   height: 100%;
+  font-size: 28rpx;
 }
 .container{
     display: -webkit-flex;
@@ -9,6 +10,12 @@ page {
     flex-direction: column;
     height: 100%;
     padding-bottom: 100rpx;
+}
+
+.top-scroll{
+  width: 100%;
+  height: 180rpx;
+  border-bottom: 2rpx solid #cccccc;
 }
 map{
     flex:1;
@@ -57,6 +64,12 @@ map{
     display: flex;
     flex-wrap: nowrap;
 }
+.time-display{
+    width: 100%;
+    height: 50rpx;
+    color: #999999;
+    flex-wrap: nowrap;
+}
 .name{
     width: 200rpx;
     overflow: hidden;
@@ -98,6 +111,9 @@ map{
 }
 .speed-value{
      color: #0033ff;
+}
+.the-speed{
+  margin-right: 20rpx;
 }
 .content-bottom-left{
     width: 80%;
@@ -264,4 +280,23 @@ map{
   color: #09d292;
   border: 1rpx solid #09d292;
   border-radius: 10%;
+}
+.scroll-item{
+  width: 180rpx;
+  height: 180rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  float: left;
+}
+.mySelfImage{
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  border: 4rpx solid #cccccc;
+}
+.item-userinfo-display{
+  width: 100%;
+  height: 100rpx;
 }

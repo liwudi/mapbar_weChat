@@ -11,6 +11,9 @@
   box-sizing: border-box;
 }
 
+.border-bottom{
+  border-bottom: 2rpx solid #cccccc;
+}
 .center{
   display: flex;
   justify-content: center;

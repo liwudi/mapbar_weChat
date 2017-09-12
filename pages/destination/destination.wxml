@@ -1,8 +1,7 @@
 <!--pages/destination/destination.wxml-->
 <view class="container" wx:if="{{userInfo.userId}}">
     <!--用户列表信息展示-->
-    <view class="userlist" >
-        <!--自己信息-->
+    <!-- <view class="userlist" >
         <view class="item">
             <view class="left-box">
                 <image class="left-image" src="{{userInfo.userImg}}"></image>
@@ -26,23 +25,16 @@
                     <view class="content-bottom-right">
                         <text></text>
                         <text class="speed-value">{{myspeed}}km/h</text>
-                        <!--<text class="split">|</text>
-                        <text class="route green"  wx:if="{{myspeed>=100}}">畅通</text>
-                        <text class="route orange"  wx:elif="{{myspeed<100&&myspeed>=20}}">正常</text>
-                        <text class="route red"  wx:else>拥堵</text>-->
+                       
                     </view>
                 </view>
             </view>
         </view>
-    </view>
+    </view> -->
     <!--群成员信息之列表展示-->
-    <view class="users" wx:if="{{usersList.length&&usersListTag}}">
+    <!-- <view class="users" wx:if="{{usersList.length&&usersListTag}}">
         <view class="users-list" wx:for="{{usersList}}">
-            <!--<view class="user-code center">
-                <view class="red-cicle center">
-                    {{index+1}}
-                </view>
-            </view>-->
+            
             <view class="left-box">
                 <image class="left-image" src="{{item.userImg}}"></image>
                 <image class="position_image" src="{{item.avatar_url}}"></image>
@@ -65,10 +57,7 @@
                     </view>
                     <view class="content-bottom-right">
                         <text class="speed-value">{{item.speed}}km/h</text>
-                        <!--<text class="split">|</text>
-                        <text class="route green"  wx:if="{{item.speed>=40}}">畅通</text>
-                        <text class="route orange"  wx:elif="{{item.speed<40&&item.speed>=20}}">正常</text>
-                        <text class="route red"  wx:else>拥堵</text>-->
+                        
                     </view>
                 </view>
             </view>                            
@@ -77,18 +66,14 @@
     </view>
     <view class="up-image center"  wx:if="{{usersList.length && usersListTag}}" bindtap="changeEvent">
         <image class="up-img" src="../resouces/myicon/up.png"></image>
-    </view>
+    </view> -->
     <!--群成员信息之轮播展示-->
-    <view class="swiper-box" wx:if="{{usersList.length && !usersListTag}}">
+    <!-- <view class="swiper-box" wx:if="{{usersList.length && !usersListTag}}">
     <swiper class="banner"  indicator-dots="{{indicatorDots}}" circular="{{true}}" autoplay="{{true}}" interval="{{2000}}" duration="{{500}}">
         <block wx:for="{{usersList}}">
             <swiper-item>
                 <view class="users-list">
-                    <!--<view class="user-code center">
-                        <view class="red-cicle center">
-                            {{index+1}}
-                        </view>
-                    </view>-->
+                   
                     <view class="left-box">
                         <image class="left-image" src="{{item.userImg}}"></image>
                         <image class="position_image" src="{{item.avatar_url}}"></image>
@@ -111,10 +96,7 @@
                             </view>
                             <view class="content-bottom-right">
                                 <text class="speed-value">{{item.speed}}km/h</text>
-                                <!--<text class="split">|</text>
-                                <text class="route green"  wx:if="{{item.speed>=40}}">畅通</text>
-                                <text class="route orange"  wx:elif="{{item.speed<40&&item.speed>=20}}">正常</text>
-                                <text class="route red"  wx:else>拥堵</text>-->
+                              
                             </view>
                         </view>
                     </view>
@@ -125,7 +107,46 @@
     </view>
     <view class="up-image center" wx:if="{{usersList.length && !usersListTag}}"  bindtap="changeEvent">
         <image class="up-img" src="../resouces/myicon/down.png"></image>
-    </view>
+    </view> -->
+    <!-- 顶部scroll-view -->
+     <scroll-view class="top-scroll" scroll-x="{{true}}">
+        <view style="width:{{(usersList.length+1) * 180 }}rpx">
+          <view class="scroll-item border-bottom">
+            <image bindtap="selfEvent" class="mySelfImage" style="border-color:{{myborderColor}}"  src="{{userInfo.userImg}}"></image>
+            <text>{{userInfo.userName}}</text>
+          </view>
+          <view wx:for="{{usersList}}" class="scroll-item border-bottom">
+            <image bindtap="usersItemEvent" class="mySelfImage" src="{{item.userImg}}"></image>
+            <text>{{item.userName}}</text>
+          </view>
+        </view>
+    </scroll-view>
+    <!-- 对应基本信息 -->
+    <view class="item-userinfo-display">
+        <view class="content">
+                
+                <view class="content-bottom">
+                    <view wx:if="{{!my_isOver}}" class="content-bottom-left">
+                        <text>距目的地</text>
+                        <text class="main-color">{{info_distance || mydistance}}</text>
+                        <text>公里，</text>
+                        <text class="main-color">{{info_time || mytime}}</text>
+                    </view>
+                    <view wx:if="{{my_isOver}}" class="content-bottom-left">
+                        <text class="hasReached">已到达</text>
+                    </view>
+                    <view class="content-bottom-right">
+                        <text></text>
+                        <text class="speed-value the-speed">{{info_speed || myspeed}}km/h</text>
+                      
+                    </view>
+                </view>
+
+                <view class="time-display">
+                    <text class="distination right-distination">{{info_update || myupdate}}</text>
+                </view>
+            </view>
+    </view> 
     <!--地图信息展示-->
     <map id="map" longitude="{{longitude}}" latitude="{{latitude}}"  scale="17"
      controls="{{controls}}" bindcontroltap="controlsEvent" markers="{{markers}}"  include-points="{{include_markers}}" bindmarkertap="markertap" polyline="{{polyline}}"  show-location >
