@@ -111,14 +111,19 @@
     <!-- 顶部scroll-view -->
      <scroll-view class="top-scroll" scroll-x="{{true}}">
         <view style="width:{{(usersList.length+1) * 180 }}rpx">
+
           <view class="scroll-item border-bottom">
-            <image bindtap="selfEvent" class="mySelfImage" style="border-color:{{myborderColor}}"  src="{{userInfo.userImg}}"></image>
-            <text>{{userInfo.userName}}</text>
+            <image wx:if="{{checkIndex}}" bindtap="selfEvent" class="mySelfImage" style="border-color:{{myborderColor}}"  src="{{userInfo.userImg}}"></image>
+            <image wx:if="{{!checkIndex}}" bindtap="selfEvent" class="mySelfImage" style="border-color:{{myborderColor}};width:110rpx;height:110rpx"  src="{{userInfo.userImg}}"></image>
+            <view class="overflowH"><text class="one_line" >{{userInfo.userName}}</text></view>
           </view>
+
           <view wx:for="{{usersList}}" class="scroll-item border-bottom">
-            <image bindtap="usersItemEvent" class="mySelfImage" src="{{item.userImg}}"></image>
-            <text>{{item.userName}}</text>
+            <image wx:if="{{checkIndex === index ? true: false}}" bindtap="usersItemEvent" data-target="{{index}}" class="mySelfImage" style="border-color:#3c78ff;width:110rpx;height:110rpx;"  src="{{item.userImg}}"></image>
+            <image wx:if="{{checkIndex !== index ? true: false}}" bindtap="usersItemEvent" data-target="{{index}}" class="mySelfImage" style="border-color:#cccccc" src="{{item.userImg}}"></image>
+            <view class="overflowH"><text class="one_line" >{{item.userName}}</text></view>
           </view>
+
         </view>
     </scroll-view>
     <!-- 对应基本信息 -->

@@ -106,7 +106,7 @@ Page({
         _this.setData({
             userInfo: res.data.user,
             isbind: res.data.user.userPhone,
-            groupList: res.data.groupList.reverse(),
+            groupList: res.data.groupList,
             groupNumber: res.data.groupList.length
         })
       }

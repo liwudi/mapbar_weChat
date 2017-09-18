@@ -138,3 +138,30 @@
   top: 50%;
   transform: translateX(-50%) translateY(-50%) rotate(45deg);
 }
+
+
+
+
+
+
+.one_line{
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.fx1{
+  flex: 1
+}
+.dsF{
+  display: flex;
+}
+.fxColumn{
+  flex-direction: column
+}
+.overflowH{
+  overflow: hidden;
+  width: 170rpx;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

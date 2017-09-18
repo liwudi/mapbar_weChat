@@ -14,11 +14,11 @@ const service_test = {
   voice_socket_url: `http://192.168.0.162:8083`,
   search_url: `https://w.mapbar.com/search2015/search`,
 }
-
+//外网测试环境
 const service_debug = {
   main_url: `http://117.107.204.167:10081`,
   voice_url: `http://117.107.204.167:8083`,
   voice_socket_url: `http://117.107.204.167:8083`,
   search_url: `https://w.mapbar.com/search2015/search`,
 }
-module.exports = service_debug;
+module.exports = service;

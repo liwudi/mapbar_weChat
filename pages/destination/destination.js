@@ -1,3 +1,4 @@
+
 // pages/destination/destination.js
 const app = getApp();
 
@@ -15,12 +16,13 @@ let isShare = false;
  * 
  * @todo：检查界面跳转，只有传递了相关参数，才能进行跳转。
  */
+console.log( + "rpx");
 let controlsArray = [{
     id: 1,
     iconPath: '/pages/resouces/myicon/myposition.png',
     position: {
         left: 10,
-        top: 20,
+        top: (AppService.systemInfo.windowHeight * (750 / AppService.systemInfo.screenWidth) - 380) * 0.7 / 2,
         width: 40,
         height: 40
     },
@@ -30,7 +32,7 @@ let controlsArray = [{
     iconPath: '/pages/resouces/myicon/allWatchBtn.png',
     position: {
         left: 10,
-        top: 60,
+        top: (AppService.systemInfo.windowHeight * (750 / AppService.systemInfo.screenWidth) - 380) * 0.8 / 2,
         width: 40,
         height: 40
     },
@@ -48,6 +50,7 @@ Page({
     mydistance:``,
     mytime:``,
     myspeed:``,
+    myupdate: `` || common.getNowDate(new Date().getTime()),
     my_isOver: 0,
     usersList:null,
     userNumber:0,
@@ -60,6 +63,10 @@ Page({
     destlat:``,
     //第三版界面改版
     myborderColor: '#3c78ff',
+    info_distance: ``,
+    info_time: ``,
+    info_speed: ``,
+    info_update: ``,
     //地图
     longitude:116.415079,
     latitude: 40.088899,
@@ -85,7 +92,7 @@ Page({
   onLoad:function(options){
     let _this = this;
     //options传递参数
-    
+  
     _this.setData({
       groupId: options.groupId,
       isGroupHost: options.isGroupHost,
@@ -120,7 +127,7 @@ Page({
     });
 
     !options.isShare && AppService.getUserInfo().then(res => {
-      console.log('get USer info',res);
+      
       if(res.statusCode == 200){
         _this.setData({
             userInfo: res.data.user,
@@ -202,13 +209,13 @@ Page({
     let _this = this;
 
     let theGroup = _this.data.groupList.find(item => item.groupId == _this.data.groupId)
-    console.log(_this.data.groupList);
-    console.log(_this.data.groupId);
+    
     theGroup && _this.setData({
         destination: theGroup.destName
     });
+    console.log('theGroup',theGroup);
     theGroup && wx.setNavigationBarTitle({
-        title: theGroup.groupName
+      title: theGroup.destName
     });
     _this.getRoute();
     _this.timer_60 = setInterval(_this.reGetRoute,60000);
@@ -228,7 +235,7 @@ Page({
       });
 
       let [lat,lon,destlon,destlat,groupid] = [res.latitude,res.longitude,_this.data.destlon,_this.data.destlat,_this.data.groupId];
-      console.log('第一次画线', lat, lon, destlon, destlat, groupid);
+      
       AppService.nav({
         lat: lat,
         lon: lon,
@@ -266,9 +273,9 @@ Page({
     let _this = this;
     
     WxService.getLocation().then(res => {
-      console.log(res);
+      
       let [lat,lon,destlon,destlat,groupid] = [res.latitude,res.longitude,_this.data.destlon,_this.data.destlat,_this.data.groupId];
-      console.log('每60s重新算路',lat,lon,destlon,destlat,groupid);
+      
       
       AppService.nav({
         lat: lat,
@@ -277,7 +284,7 @@ Page({
         destlat: destlat,
         groupid: groupid
       }).then(res => {
-        console.log(res);
+       
         let data = res.data.data.routelatlon;
         _this.dealRouteData(data);
       }).catch(err => {
@@ -347,14 +354,14 @@ Page({
     let _this = this;
     let longitude,latitude,speed;
     WxService.getLocation().then(res => {
-      console.log(`getLocation-----`,res);
+      
       longitude = res.longitude;
       latitude = res.latitude;
       //console.log(typeof res.speed == `undefined`);
       speed = (typeof res.speed == `undefined`||parseInt(res.speed) < 0)? 0 : parseInt(res.speed)*3.6;
-      console.log(`wx接口获取`,longitude,latitude,speed);
+      
     }).then(res =>{
-      console.log(`upLoadLonlat准备上传的数据`,longitude,latitude,speed);
+      
       _this.updateLocation(longitude,latitude,speed);
     })
   },
@@ -372,8 +379,6 @@ Page({
       speed: speed,
       userid: _this.data.userInfo.userId
     }).then(res => {
-      
-      console.log(`updateLocation返回数据`,res)
       !_this.data.destination && AppService.getUserInfo().then(res => {
         if(res.statusCode == 200){
           _this.setData({
@@ -393,16 +398,17 @@ Page({
       _this.setData({
           groupName: res.data.groupname
       });
+      console.log(res.data);
       wx.setNavigationBarTitle({ title: res.data.groupname + "(" + personNumber+"人)"});
-      //console.log('users', users);
-
+      wx.setNavigationBarTitle({ title: "(" + personNumber + "人)" + _this.data.destination});
+      let userMarkers = [].concat(_this.data.markers.slice(0, 2));
       users.map((item,i) => {
         item.index = i;
         item.avatar_url = `../resouces/voice/avatar_tag${i+1}.png`;
       })
-      //console.log(`users`,users);
+      
       let mySelf = users.find(item => item.userId == _this.data.userInfo.userId);
-      console.log(`mySelf`,mySelf);
+      
       if (mySelf) {
           dealMySelf();
       }
@@ -413,34 +419,115 @@ Page({
         dealUsers();
       }
       function dealMySelf(){
+        !_this.arrayImage && (_this.arrayImage = []);
+        _this.arrayImage && dealArrayImage(_this.arrayImage);
+        function dealArrayImage(arrayImage){
+          let current = arrayImage.find(every => {
+            return every.userId == mySelf.userId
+          });
+          if(!current){
+            downLoadImg(mySelf.userImg, (path) => {
+              _this.arrayImage.push({
+                userId: mySelf.userId,
+                userTempFilePath: path
+              });
+            })
+          }
+
+        }
+
         _this.setData({
               mydistance: mySelf.distanceSurplus.toFixed(1),
               mytime: (parseInt(mySelf.surplusTime / 60/60) < 1)?parseInt(mySelf.surplusTime / 60) + "分钟":parseInt(mySelf.surplusTime / 60/60) + "小时" + parseInt(mySelf.surplusTime / 60%60) + "分钟",
               myspeed: parseInt(mySelf.speed),
+              myupdate: common.getNowDate(mySelf.updateTime),
               my_tag_url: `../resouces/voice/avatar_tag${mySelf.index+1}.png`,
               my_isOver: mySelf.isOver
           });
+
           if (mySelf.isOver) {
               WxService.navigateTo(`../successes/successes?groupId=${_this.data.groupId}&userId=${_this.data.userInfo.userId}&lat=${_this.data.my_lat}&lon=${_this.data.my_lon}&deslon=${_this.data.destlon}&deslat=${_this.data.destlat}&destination=${_this.data.destination}`,() => {
                 clearInterval(_this.timer_10);
               });
           }
       }
-
+      function downLoadImg(url,next){
+        wx.downloadFile({
+          url: url,
+          success: function (res) {
+            
+            let path = res.tempFilePath;
+            next && next(path)
+          }
+        })
+      }
       //users处理
      
       function dealUsers(){
-        let userMarkers = [].concat(_this.data.markers.slice(0, 2));
+        
+        
         users.forEach((item, i) => {
-            userMarkers.push({
-                iconPath: `/pages/resouces/voice/poi${item.index + 1}.png`,
-                id: i,
-                latitude: item.lat,
-                longitude: item.lon,
-                width: 30,
-                height: 40,
-                marker_tag: i
-            });
+            let url = item.userImg;
+            //第一种方案，个人认为不好，下载之后，一直setData。一直有缓存
+            // downLoadImg(url,(path)=>{
+            //     userMarkers.push({
+            //       iconPath: path,
+            //       id: i,
+            //       latitude: item.lat,
+            //       longitude: item.lon,
+            //       width: 40,
+            //       height: 40,
+            //       marker_tag: i
+            //     });
+            //     _this.setData({
+            //       markers: userMarkers
+            //     })
+            // })
+            
+
+            //第二种方案,使用this.arrayImage缓存临时路径。
+            
+            !_this.arrayImage && (_this.arrayImage = []);
+            
+            _this.arrayImage && dealArrayImage(_this.arrayImage);
+            function dealArrayImage(arrayImage){
+              
+              let current = arrayImage.find(every => {
+                return every.userId == item.userId
+              });
+             
+              if(current){
+                
+                userMarkers.push({
+                  iconPath: current.userTempFilePath,
+                  id: i,
+                  latitude: item.lat,
+                  longitude: item.lon,
+                  width: 40,
+                  height: 40,
+                  marker_tag: i
+                }); 
+              }else{  
+                downLoadImg(item.userImg,(path)=>{
+                  _this.arrayImage.push({
+                    userId:item.userId,
+                    userTempFilePath:path
+                  });
+                  userMarkers.push({
+                    iconPath: path,
+                    id: i,
+                    latitude: item.lat,
+                    longitude: item.lon,
+                    width: 40,
+                    height: 40,
+                    marker_tag: i
+                  });
+                  _this.setData({
+                    markers: userMarkers
+                  })
+                })
+              }
+            } 
             item.distanceSurplus = item.distanceSurplus.toFixed(1);
             item.updateTime = common.getNowDate(item.updateTime);
             item.surplusTime = (parseInt(item.surplusTime / 60/60) < 1)?parseInt(item.surplusTime / 60) + "分钟":parseInt(item.surplusTime / 60/60) + "小时" + parseInt(item.surplusTime / 60%60) + "分钟";
@@ -458,8 +545,8 @@ Page({
             userNumber:users.length + 1
         });
       }
-   
     }).catch(error => {
+      console.log(error);
       common.dealCatch(function(){
         WxService.hideLoading();
         WxService.showModal('温馨提示','此群已解散',false,function(){
@@ -484,13 +571,13 @@ Page({
     wx.onSocketMessage(function(res) {
 
       let content=JSON.parse(res.data);
-      console.log(content);
+      
       if(content.status==200&&(_this.data.groupId == content.data.groupid)){
       
-        console.log(`content`,content);
+       
 
         _this.socketMsgQueue.push(content);
-        console.log(' _this.socketMsgQueue',_this.socketMsgQueue.length);
+        
         if(app.globalData.isAutoPlay){
           _this.playVoice();
         }else{
@@ -510,9 +597,9 @@ Page({
     var _this = this;
     // _this.isPlaying = false;
     function playFor(){
-      console.log('start playing', _this.socketMsgQueue.length);
+      
       if(_this.socketMsgQueue.length > 0){
-          console.log('start playing');
+          
           play(_this.socketMsgQueue.shift(), playFor);
       }else{
         _this.isPlaying = false;
@@ -520,7 +607,7 @@ Page({
     }
     
     function playEnd(next){
-      console.log('start playing end');
+      
       _this.isPlaying = false;
       controlsArray.length = 2;
       _this.setData({
@@ -530,10 +617,10 @@ Page({
     }
 
     function play(content, next){
-      console.log('start playing ',content);
+      
       _this.isPlaying = true;
       WxService.downloadFile(content.data.id).then(res => {
-        console.log(res);
+        
         ceaterMarker(content);
 
         let playTime = (content.data.timelong + 1) * 1000 ;
@@ -556,12 +643,31 @@ Page({
 
 
     function ceaterMarker(content){
-      console.log(`执行了相关Markders`)
+      
       let users = _this.users;
       let theUserIndex = users.findIndex((item) => item.userId == content.data.userid);
+      //通过userid获取图片的临时路径
+      let theUserId = content.data.userid;
+      !_this.arrayImage && (_this.arrayImage = []);
+      let thePath;
+      console.log("_this.arrayImage", _this.arrayImage);
+      console.log("theUserId",theUserId);
+      if (_this.arrayImage){
+         thePath = findPath(_this.arrayImage, theUserId);
+      }
+      console.log('thePath', thePath);
+      function findPath(array,id){
+        console.log(array, id)
+        let current = array.find(item => {
+          return item.userId == id
+        });
+        console.log('current',current);
+        return current.userTempFilePath;
+      }
+      
       let obj = {
           id: 3,
-          iconPath: `/pages/resouces/voice/speak${theUserIndex+1}.png`,
+          iconPath: thePath,
           position: {
               left: AppService.systemInfo.windowWidth - 60,
               top: 20,
@@ -572,7 +678,7 @@ Page({
       }
       controlsArray.length = 2;
       controlsArray.push(obj);
-      console.log(`controlsArray`,controlsArray);
+      
       _this.setData({
         controls: controlsArray
       });
@@ -586,7 +692,7 @@ Page({
     })
   },
   controlsEvent: function(res){
-    console.log(res);
+   
     let _this = this;
     if(res.controlId == 1){
       _this.mapCtx = wx.createMapContext('map');
@@ -618,15 +724,26 @@ Page({
   selfEvent: function(){
     this.setData({
       myborderColor:'#3c78ff',
-      checkIndex: ''
+      checkIndex: '',
+      info_distance: this.data.mydistance,
+      info_time: this.data.mytime,
+      info_speed: this.data.myspeed,
+      info_update: this.data.myupdate,
     });
   },
   usersItemEvent: function(e){
-    let index = 1;
+   
+    let index = e.target.dataset.target;
+    
     this.setData({
       myborderColor: '#cccccc',
-      checkIndex: index
+      checkIndex: index,
+      info_distance: this.data.usersList[index].distanceSurplus,
+      info_time: this.data.usersList[index].surplusTime,
+      info_speed: this.data.usersList[index].speed,
+      info_update: this.data.usersList[index].updateTime,
     });
+    
   },
   //上传语音相关
   touchStartEvent: function() {
@@ -636,18 +753,18 @@ Page({
     })
     _this.startTime = new Date().getSeconds();
     WxService.startRecord().then(res => {
-      console.log(res)
+      
       let tempFilePath = res.tempFilePath;
 
       return WxService.saveFile(tempFilePath);
     }).then(res => {
-      console.log(`saveFile`,res);
+      
       let savedFilePath = res.savedFilePath;
       let userid =  _this.data.userInfo.userId;
       let groupid = _this.data.groupId;
       let timelong = ((_this.endTime-_this.startTime)>=0)?(_this.endTime-_this.startTime):(60-_this.startTime+_this.endTime);
 
-      console.log(`上传的各种数据`,userid,groupid)
+      
       WxService.upLoadFile(savedFilePath,userid,groupid,timelong);
     })
 
