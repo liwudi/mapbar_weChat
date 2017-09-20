@@ -14,9 +14,7 @@ let isShare = false;
 /**
  * @todo:dataDeal function,两个错误undefined is not a object（theGroup.destName）2,Can not read Perperty 'destname' of undefined。
  * 
- * @todo：检查界面跳转，只有传递了相关参数，才能进行跳转。
  */
-console.log( + "rpx");
 let controlsArray = [{
     id: 1,
     iconPath: '/pages/resouces/myicon/myposition.png',

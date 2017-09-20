@@ -110,18 +110,28 @@
     </view> -->
     <!-- 顶部scroll-view -->
      <scroll-view class="top-scroll" scroll-x="{{true}}">
-        <view style="width:{{(usersList.length+1) * 180 }}rpx">
+        <view style="width:{{(usersList.length+2) * 180 }}rpx">
 
           <view class="scroll-item border-bottom">
             <image wx:if="{{checkIndex}}" bindtap="selfEvent" class="mySelfImage" style="border-color:{{myborderColor}}"  src="{{userInfo.userImg}}"></image>
-            <image wx:if="{{!checkIndex}}" bindtap="selfEvent" class="mySelfImage" style="border-color:{{myborderColor}};width:110rpx;height:110rpx"  src="{{userInfo.userImg}}"></image>
-            <view class="overflowH"><text class="one_line" >{{userInfo.userName}}</text></view>
+            <image wx:if="{{!checkIndex}}" bindtap="selfEvent" class="mySelfImage" style="border-color:{{myborderColor}};width:130rpx;height:130rpx"  src="{{userInfo.userImg}}"></image>
+            <view wx:if="{{checkIndex}}" class="overflowH"><text style="color:#3c78ff" class="one_line" >{{userInfo.userName}}</text></view>
+            <view wx:if="{{!checkIndex}}" class="overflowH"><text style="color:#555555" class="one_line" >{{userInfo.userName}}</text></view>
           </view>
 
           <view wx:for="{{usersList}}" class="scroll-item border-bottom">
-            <image wx:if="{{checkIndex === index ? true: false}}" bindtap="usersItemEvent" data-target="{{index}}" class="mySelfImage" style="border-color:#3c78ff;width:110rpx;height:110rpx;"  src="{{item.userImg}}"></image>
+            <image wx:if="{{checkIndex === index ? true: false}}" bindtap="usersItemEvent" data-target="{{index}}" class="mySelfImage" style="border-color:#3c78ff;width:130rpx;height:130rpx;"  src="{{item.userImg}}"></image>
             <image wx:if="{{checkIndex !== index ? true: false}}" bindtap="usersItemEvent" data-target="{{index}}" class="mySelfImage" style="border-color:#cccccc" src="{{item.userImg}}"></image>
-            <view class="overflowH"><text class="one_line" >{{item.userName}}</text></view>
+            <view wx:if="{{checkIndex === index ? true: false}}" class="overflowH"><text style="color:#3c78ff" class="one_line" >{{item.userName}}</text></view>
+            <view wx:if="{{checkIndex !== index ? true: false}}" class="overflowH"><text style="color:#555555" class="one_line" >{{item.userName}}</text></view>
+          </view>
+
+          <view class="scroll-item border-bottom">
+            <button open-type="share" class="sharecircle">
+              <view class="sharerow"></view>
+              <view class="sharecolumn"></view>
+            </button> 
+            <view class="overflowH"><text class="one_line" ></text></view>        
           </view>
 
         </view>

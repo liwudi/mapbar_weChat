@@ -300,3 +300,33 @@ map{
   width: 100%;
   height: 100rpx;
 }
+
+
+/* 转发样式 */
+.sharecircle{
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  border: 10rpx solid #cccccc;
+  position: relative
+}
+.sharerow{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  width: 60rpx;
+  height: 10rpx;
+  background-color: #cccccc;
+}
+
+.sharecolumn{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 60rpx;
+  height: 10rpx;
+  background-color: #cccccc;
+  transform: translate(-50%,-50%) rotate(90deg);
+}
+
