@@ -17,12 +17,18 @@
     margin-right: 20rpx;
     display: flex;
     align-items: center;
+    padding-left: 10rpx;
 }
 .search-icon{
     margin-left: 20rpx;
     flex: 1;
 }
+.search-icon-index{
+  width: 40rpx;
+  height: 40rpx;
+}
 .input{
+    margin-left: 5rpx;
     height: 100%;
     flex: 13;
     font-family: "微软雅黑";
@@ -31,7 +37,7 @@
 }
 .btn{
     width: 150rpx;
-    border-radius: 10%;
+    border-radius: 10rpx;
     background-color: #3c78ff;
     color: white;
 }
@@ -52,8 +58,8 @@
     width: 60rpx
 }
 .item-left-box-image{
-    width: 36rpx;
-    height: 36rpx;
+    width: 32rpx;
+    height: 32rpx;
 }
 .item-content{
     flex: 1;
@@ -64,8 +70,8 @@
     width: 110rpx;
 }
 .list-input-image{
-    width: 28rpx;
-    height: 28rpx;
+    width: 26rpx;
+    height: 26rpx;
 }
 .text-box1{
     color: #555555;

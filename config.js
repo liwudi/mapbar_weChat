@@ -21,4 +21,4 @@ const service_debug = {
   voice_socket_url: `http://117.107.204.167:8083`,
   search_url: `https://w.mapbar.com/search2015/search`,
 }
-module.exports = service;
+module.exports = service_debug;

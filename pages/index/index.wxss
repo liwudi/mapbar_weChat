@@ -28,11 +28,14 @@ page{
   border-radius: 10rpx;
   display: flex;
   padding: 0 10rpx;
+  align-items: center
 }
 .search-icon-index{
-  flex: 1;
+  width: 40rpx;
+  height: 40rpx;
 }
 .input-index{
+  margin-left: 10rpx;
   height: 100%;
   flex: 14;
   display: flex;
@@ -242,8 +245,8 @@ item-image{
   height: 60%;
 }
 .group-right-image{
-  width: 40%;
-  height: 40%;
+  width: 35%;
+  height: 35%;
   border-radius: 50%;
 }
 .left-center{

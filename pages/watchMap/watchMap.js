@@ -110,8 +110,8 @@ Page({
         id: i,
         latitude: parseFloat(loc[1]),
         longitude: parseFloat(loc[0]),
-        width: 30,
-        height: 40,
+        width: 25,
+        height: 30,
         
       }
     });

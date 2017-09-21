@@ -3,7 +3,7 @@
     <view class="text center">设置群目的地</view>
     <view class="search-box">
         <view class="search">
-            <icon class="search-icon center" type="search" size="23"></icon>
+            <image class="search-icon-index center" src="../resouces/myicon/search.png"></image>
             <input class="input" type="text" placeholder="请输入搜索的地点" bindinput="inputEvent" bindfocus="focusEvent" value="{{inputData}}"/>
         </view>
         <view class="btn center" hover-class="hover-btn" bindtap="searchEvent">搜索</view>

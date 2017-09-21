@@ -7,7 +7,8 @@
     </view>
     <view class="input-box center">
       <view class="search-index">
-        <icon class="search-icon-index center" type="search" size="23"></icon>
+        
+        <image class="search-icon-index center" src="../resouces/myicon/search.png"></image>
         <view class="input-index" type="text" placeholder="请输入搜索的地点" bindtap="tapEvent">请输入搜索的地点</view>
       </view>
     </view>
