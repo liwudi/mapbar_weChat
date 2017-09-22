@@ -110,34 +110,53 @@
     </view> -->
     <!-- 顶部scroll-view -->
      <scroll-view class="top-scroll" scroll-x="{{true}}">
-        <view style="width:{{(usersList.length+2) * 180 }}rpx">
+        <view style="width:{{(usersList.length+2) * 140 }}rpx">
 
-          <view class="scroll-item border-bottom">
-            <image wx:if="{{checkIndex}}" bindtap="selfEvent" class="mySelfImage" style="border-color:{{myborderColor}}"  src="{{userInfo.userImg}}"></image>
-            <image wx:if="{{!checkIndex}}" bindtap="selfEvent" class="mySelfImage" style="border-color:{{myborderColor}};width:130rpx;height:130rpx"  src="{{userInfo.userImg}}"></image>
-            <view wx:if="{{checkIndex}}" class="overflowH"><text style="color:#3c78ff" class="one_line" >{{userInfo.userName}}</text></view>
-            <view wx:if="{{!checkIndex}}" class="overflowH"><text style="color:#555555" class="one_line" >{{userInfo.userName}}</text></view>
+          <view class="scroll-item">
+            <view class="img-box center">
+              <image wx:if="{{!checkMe}}" bindtap="selfEvent" class="mySelfImage" style="border-color:{{myborderColor}};width:80rpx;height:80rpx"  src="{{userInfo.userImg}}"></image>
+              <image wx:if="{{checkMe}}" bindtap="selfEvent" class="mySelfImage" style="border-color:{{myborderColor}};width:120rpx;height:120rpx"  src="{{userInfo.userImg}}"></image>
+            </view>
+            <view class="username-box center">
+              <view wx:if="{{checkMe}}" class="overflowH">
+                <text style="color:#3c78ff" class="usernameWidth one_line" >{{userInfo.userName}}</text>
+                <view class="triangle-down triangle-position"></view>
+              </view>
+              <view wx:if="{{!checkMe}}" class="overflowH"><text style="color:#555555" class="usernameWidth one_line" >{{userInfo.userName}}</text></view>
+            </view>
+            
           </view>
 
-          <view wx:for="{{usersList}}" class="scroll-item border-bottom">
-            <image wx:if="{{checkIndex === index ? true: false}}" bindtap="usersItemEvent" data-target="{{index}}" class="mySelfImage" style="border-color:#3c78ff;width:130rpx;height:130rpx;"  src="{{item.userImg}}"></image>
-            <image wx:if="{{checkIndex !== index ? true: false}}" bindtap="usersItemEvent" data-target="{{index}}" class="mySelfImage" style="border-color:#cccccc" src="{{item.userImg}}"></image>
-            <view wx:if="{{checkIndex === index ? true: false}}" class="overflowH"><text style="color:#3c78ff" class="one_line" >{{item.userName}}</text></view>
-            <view wx:if="{{checkIndex !== index ? true: false}}" class="overflowH"><text style="color:#555555" class="one_line" >{{item.userName}}</text></view>
+          <view wx:for="{{usersList}}" class="scroll-item">
+            <view class="img-box center">
+              <image wx:if="{{checkIndex === index ? true: false}}" bindtap="usersItemEvent" data-target="{{index}}" class="mySelfImage" style="border-color:#3c78ff;width:120rpx;height:120rpx;"  src="{{item.userImg}}"></image>
+              <image wx:if="{{checkIndex !== index ? true: false}}" bindtap="usersItemEvent" data-target="{{index}}" class="mySelfImage" style="border-color:#cccccc" src="{{item.userImg}}"></image>
+            </view>
+            <view class="username-box center">
+              <view wx:if="{{checkIndex === index ? true: false}}" class="overflowH">
+                <text style="color:#3c78ff" class="usernameWidth one_line" >{{item.userName}}</text>
+                <view class="triangle-down triangle-position"></view>
+              </view>
+              <view wx:if="{{checkIndex !== index ? true: false}}" class="overflowH"><text style="color:#555555" class="usernameWidth one_line" >{{item.userName}}</text></view>
+            </view>
           </view>
 
-          <view class="scroll-item border-bottom">
-            <button open-type="share" class="sharecircle">
-              <view class="sharerow"></view>
-              <view class="sharecolumn"></view>
-            </button> 
-            <view class="overflowH"><text class="one_line" ></text></view>        
+          <view class="scroll-item">
+            <view class="img-box center">
+              <button open-type="share" class="sharecircle">
+                <view class="sharerow"></view>
+                <view class="sharecolumn"></view>
+              </button> 
+            </view>
+            <view class="username-box center">
+              <view class="overflowH"><text class="one_line" >邀请</text></view> 
+            </view>       
           </view>
 
         </view>
     </scroll-view>
     <!-- 对应基本信息 -->
-    <view class="item-userinfo-display">
+    <!-- <view class="item-userinfo-display">
         <view class="content">
                 
                 <view class="content-bottom">
@@ -161,7 +180,30 @@
                     <text class="distination right-distination">{{info_update || myupdate}}</text>
                 </view>
             </view>
-    </view> 
+    </view>  -->
+    <view class="baseInfo">
+      <view class="baseContent " wx:if="{{!info_isOver}}">
+        <view class='baseDestination baseItem'>
+          <text class="colorMain">{{info_distance || mydistance}}公里</text>
+          <text class="colorBase">距目的地</text>
+        </view>
+        <view class='baseTime baseItem'>
+          <text class="colorMain">{{info_time || mytime}}</text>
+          <text class="colorBase">剩余时间</text>
+        </view>
+        <view class='baseSpeed baseItem'>
+          <text class="colorMain">{{info_speed || myspeed}}km/h</text>
+          <text class="colorBase">当前时速</text>
+        </view>
+      </view>
+      <view class="baseContent" wx:if="{{info_isOver}}">
+        <image class="imgReached" src="../resouces/image/reached.png"></image>
+        <text class="isReachedText isReachBox"><text class="isReachedText maxWidth one_line">{{info_username || userInfo.userName}}</text><text class="one_line isReachedText colorMain">已到达</text></text>
+      </view>
+      <view class="baseTime center">
+        <text class="colorNote">更新于{{info_update || myupdate}}</text>
+      </view>
+    </view>
     <!--地图信息展示-->
     <map id="map" longitude="{{longitude}}" latitude="{{latitude}}"  scale="17"
      controls="{{controls}}" bindcontroltap="controlsEvent" markers="{{markers}}"  include-points="{{include_markers}}" bindmarkertap="markertap" polyline="{{polyline}}"  show-location >

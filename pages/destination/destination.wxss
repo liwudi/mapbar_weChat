@@ -12,11 +12,7 @@ page {
     padding-bottom: 100rpx;
 }
 
-.top-scroll{
-  width: 100%;
-  height: 180rpx;
-  border-bottom: 2rpx solid #cccccc;
-}
+
 map{
     flex:1;
     width:100%;
@@ -216,8 +212,8 @@ map{
     position: relative;
 }
 .img{
-    width: 60rpx;
-    height: 60rpx;
+    width: 50rpx;
+    height: 50rpx;
 }
 
 .hint{
@@ -276,23 +272,42 @@ map{
     transform: translateY(-50%);
 }
 /*新增样式，3.0版本*/
+.top-scroll{
+  width: 100%;
+  height: 200rpx;
+  border-bottom: 2rpx solid #cccccc;
+}
 .hasReached{
   color: #09d292;
   border: 1rpx solid #09d292;
   border-radius: 10%;
 }
 .scroll-item{
-  width: 180rpx;
-  height: 180rpx;
+  width: 140rpx;
+  height: 200rpx;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
   align-items: center;
   float: left;
 }
+.img-box{
+  width: 140rpx;
+  height: 140rpx;
+}
+.username-box{
+  width: 140;
+  height: 60rpx;
+  position: relative;
+}
+.triangle-position{
+  position: absolute;
+  bottom: 5rpx;
+  left: 50%;
+  transform: translateX(-50%);
+}
 .mySelfImage{
-  width: 100rpx;
-  height: 100rpx;
+  width: 80rpx;
+  height: 80rpx;
   border-radius: 50%;
   border: 4rpx solid #cccccc;
 }
@@ -304,19 +319,20 @@ map{
 
 /* 转发样式 */
 .sharecircle{
-  width: 100rpx;
-  height: 100rpx;
+  width: 80rpx;
+  height: 80rpx;
   border-radius: 50%;
-  border: 10rpx solid #cccccc;
-  position: relative
+  border: 7rpx solid #cccccc;
+  position: relative;
+  background-color: #ffffff;
 }
 .sharerow{
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%,-50%);
-  width: 60rpx;
-  height: 10rpx;
+  width: 40rpx;
+  height: 5rpx;
   background-color: #cccccc;
 }
 
@@ -324,9 +340,53 @@ map{
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 60rpx;
-  height: 10rpx;
+  width: 40rpx;
+  height: 5rpx;
   background-color: #cccccc;
   transform: translate(-50%,-50%) rotate(90deg);
+}
+
+.baseContent{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 140rpx;
+}
+.baseItem{
+  height: 120rpx;
+  width: 230rpx;
+  border: 2rpx solid #cccccc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  border-radius: 10rpx;
+  padding: 10rpx;
+  box-sizing: border-box;
+}
+.baseTime{
+  padding: 10rpx;
+}
+.usernameWidth{
+  width: 140rpx;
+  overflow: hidden;
+  display: inline-block;
+}
+.imgReached{
+  width: 140rpx;
+  height: 120rpx;
+  margin-left: 120rpx;
+}
+.isReachBox{
+  margin-left: 50rpx;
+  flex: 1;
+  display: flex;
+  align-items: center
+}
+.isReachedText{
+  display: inline-block;
+}
+.maxWidth{
+  max-width: 250rpx;
 }
 

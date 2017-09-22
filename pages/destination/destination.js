@@ -20,7 +20,7 @@ let controlsArray = [{
     iconPath: '/pages/resouces/myicon/myposition.png',
     position: {
         left: 10,
-        top: (AppService.systemInfo.windowHeight * (750 / AppService.systemInfo.screenWidth) - 380) * 0.7 / 2,
+        top: (AppService.systemInfo.windowHeight * (750 / AppService.systemInfo.screenWidth) - 500) * 0.6 / 2,
         width: 40,
         height: 40
     },
@@ -30,7 +30,7 @@ let controlsArray = [{
     iconPath: '/pages/resouces/myicon/allWatchBtn.png',
     position: {
         left: 10,
-        top: (AppService.systemInfo.windowHeight * (750 / AppService.systemInfo.screenWidth) - 380) * 0.8 / 2,
+        top: (AppService.systemInfo.windowHeight * (750 / AppService.systemInfo.screenWidth) - 500) * 0.8 / 2,
         width: 40,
         height: 40
     },
@@ -65,6 +65,8 @@ Page({
     info_time: ``,
     info_speed: ``,
     info_update: ``,
+    checkMe: true,
+    info_username: ``,
     //地图
     longitude:116.415079,
     latitude: 40.088899,
@@ -444,9 +446,14 @@ Page({
           });
 
           if (mySelf.isOver) {
-              WxService.navigateTo(`../successes/successes?groupId=${_this.data.groupId}&userId=${_this.data.userInfo.userId}&lat=${_this.data.my_lat}&lon=${_this.data.my_lon}&deslon=${_this.data.destlon}&deslat=${_this.data.destlat}&destination=${_this.data.destination}`,() => {
-                clearInterval(_this.timer_10);
-              });
+              _this.setData({
+                info_isOver: mySelf.isOver
+              },()=>{
+                WxService.navigateTo(`../successes/successes?groupId=${_this.data.groupId}&userId=${_this.data.userInfo.userId}&lat=${_this.data.my_lat}&lon=${_this.data.my_lon}&deslon=${_this.data.destlon}&deslat=${_this.data.destlat}&destination=${_this.data.destination}`, () => {
+                  clearInterval(_this.timer_10);
+                });
+              })
+              
           }
       }
       function downLoadImg(url,next){
@@ -503,10 +510,20 @@ Page({
                   longitude: item.lon,
                   width: 40,
                   height: 40,
-                  marker_tag: i
+                  marker_tag: i,
+                  callout:{
+                    content:item.userName,
+                    color: 'red',
+                    borderRadius:40,
+                    bgColor:'white'
+                  }
                 }); 
               }else{  
+                console.log("下载图片地址", item.userImg);
+              
                 downLoadImg(item.userImg,(path)=>{
+                  console.log("下载得到的临时路径是",path);
+                
                   _this.arrayImage.push({
                     userId:item.userId,
                     userTempFilePath:path
@@ -518,7 +535,13 @@ Page({
                     longitude: item.lon,
                     width: 40,
                     height: 40,
-                    marker_tag: i
+                    marker_tag: i,
+                    callout: {
+                      content: item.userName,
+                      color: 'red',
+                      borderRadius: 40,
+                      bgColor: 'white'
+                    }
                   });
                   _this.setData({
                     markers: userMarkers
@@ -667,7 +690,7 @@ Page({
           id: 3,
           iconPath: thePath,
           position: {
-              left: AppService.systemInfo.windowWidth - 60,
+              left: 20,
               top: 20,
               width: 50,
               height: 50
@@ -720,13 +743,17 @@ Page({
     WxService.navigateTo(`../chat/chat?groupId=${_this.data.groupId}&groupName=${_this.data.groupName}&isGroupHost=${_this.data.isGroupHost}`);
   },
   selfEvent: function(){
+
     this.setData({
       myborderColor:'#3c78ff',
       checkIndex: '',
+      checkMe: true,
       info_distance: this.data.mydistance,
       info_time: this.data.mytime,
       info_speed: this.data.myspeed,
       info_update: this.data.myupdate,
+      info_isOver: this.data.my_isOver,
+      info_username: this.data.userInfo.userName
     });
   },
   usersItemEvent: function(e){
@@ -736,10 +763,13 @@ Page({
     this.setData({
       myborderColor: '#cccccc',
       checkIndex: index,
+      checkMe: false,
       info_distance: this.data.usersList[index].distanceSurplus,
       info_time: this.data.usersList[index].surplusTime,
       info_speed: this.data.usersList[index].speed,
       info_update: this.data.usersList[index].updateTime,
+      info_isOver: this.data.usersList[index].isOver,
+      info_username: this.data.usersList[index].userName
     });
     
   },

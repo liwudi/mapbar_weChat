@@ -165,3 +165,23 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
+
+.colorMain{
+  color: #3c78ff;
+}
+.colorBase{
+  color: #555555;
+}
+.colorNote{
+  color: #999999;
+}
+
+/* 三角形 */
+.triangle-down {
+    width: 0;
+    height: 0;
+    border-left: 10rpx solid transparent;
+    border-right: 10rpx solid transparent;
+    border-top: 10rpx solid #3c78ff;
+}
