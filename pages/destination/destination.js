@@ -62,11 +62,12 @@ Page({
     //第三版界面改版
     myborderColor: '#3c78ff',
     info_distance: ``,
-    info_time: ``,
+    info_time: [],
     info_speed: ``,
     info_update: ``,
     checkMe: true,
     info_username: ``,
+    dealMyTime:[],
     //地图
     longitude:116.415079,
     latitude: 40.088899,
@@ -443,6 +444,10 @@ Page({
               myupdate: common.getNowDate(mySelf.updateTime),
               my_tag_url: `../resouces/voice/avatar_tag${mySelf.index+1}.png`,
               my_isOver: mySelf.isOver
+          },()=>{
+            _this.setData({
+              dealMyTime:common.dealTime(_this.data.mytime)
+            })
           });
 
           if (mySelf.isOver) {
@@ -749,7 +754,7 @@ Page({
       checkIndex: '',
       checkMe: true,
       info_distance: this.data.mydistance,
-      info_time: this.data.mytime,
+      info_time: common.dealTime(this.data.mytime),
       info_speed: this.data.myspeed,
       info_update: this.data.myupdate,
       info_isOver: this.data.my_isOver,
@@ -765,7 +770,7 @@ Page({
       checkIndex: index,
       checkMe: false,
       info_distance: this.data.usersList[index].distanceSurplus,
-      info_time: this.data.usersList[index].surplusTime,
+      info_time: common.dealTime(this.data.usersList[index].surplusTime),
       info_speed: this.data.usersList[index].speed,
       info_update: this.data.usersList[index].updateTime,
       info_isOver: this.data.usersList[index].isOver,

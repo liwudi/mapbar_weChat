@@ -185,3 +185,24 @@
     border-right: 10rpx solid transparent;
     border-top: 10rpx solid #3c78ff;
 }
+
+/* 字体大小定制 */
+.font-size-small{
+  font-size: 24rpx;
+}
+.font-size-base{
+  font-size: 28rpx;
+}
+.font-size-big{
+  font-size: 36rpx;
+}
+.font-size-title{
+  font-size: 36rpx;
+}
+
+.font-weight{
+  font-weight: 700;
+}
+.borderBottom{
+  border-bottom: 1rpx solid #cccccc;
+}

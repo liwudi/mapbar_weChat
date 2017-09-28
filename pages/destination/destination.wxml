@@ -143,7 +143,7 @@
 
           <view class="scroll-item">
             <view class="img-box center">
-              <button open-type="share" class="sharecircle">
+              <button type='default' open-type="share" class="sharecircle">
                 <view class="sharerow"></view>
                 <view class="sharecolumn"></view>
               </button> 
@@ -184,24 +184,29 @@
     <view class="baseInfo">
       <view class="baseContent " wx:if="{{!info_isOver}}">
         <view class='baseDestination baseItem'>
-          <text class="colorMain">{{info_distance || mydistance}}公里</text>
-          <text class="colorBase">距目的地</text>
+          <text class="colorMain font-size-small"><text class='font-size-big font-weight'>{{info_distance || mydistance}}</text>公里</text>
+          <text class="colorNote">距目的地</text>
         </view>
         <view class='baseTime baseItem'>
-          <text class="colorMain">{{info_time || mytime}}</text>
-          <text class="colorBase">剩余时间</text>
+          <!-- <text class="colorMain">{{info_time || mytime}}</text> -->
+          <!-- 这是一个特殊的表示info_time的算法，目的是为了展示不同大小的文字 -->
+          <text class="colorMain" wx:if="{{info_time.length == 0 && dealMyTime.length == 2}}"><text class='font-size-big font-weight'>{{dealMyTime[0]}}</text><text class='font-size-small'>{{dealMyTime[1]}}</text></text>
+          <text class="colorMain" wx:if="{{info_time.length == 0 && dealMyTime.length == 4}}"><text class='font-size-big font-weight'>{{dealMyTime[0]}}</text><text class='font-size-small'>{{dealMyTime[1]}}</text><text class='font-size-big font-weight'>{{dealMyTime[2]}}</text><text class='font-size-small'>{{dealMyTime[3]}}</text></text>
+          <text class="colorMain" wx:if="{{info_time.length == 2}}"><text class='font-size-big font-weight'>{{info_time[0]}}</text><text class='font-size-small'>{{info_time[1]}}</text></text>
+          <text class="colorMain" wx:if="{{info_time.length == 4}}"><text class='font-size-big font-weight'>{{info_time[0]}}</text><text class='font-size-small'>{{info_time[1]}}</text><text class='font-size-big font-weight'>{{info_time[2]}}</text><text class='font-size-small'>{{info_time[3]}}</text></text>
+          <text class="colorNote font-size-small">剩余时间</text>
         </view>
         <view class='baseSpeed baseItem'>
-          <text class="colorMain">{{info_speed || myspeed}}km/h</text>
-          <text class="colorBase">当前时速</text>
+          <text class="colorMain font-size-small"><text class='font-size-big font-weight'>{{info_speed || myspeed}}</text>km/h</text>
+          <text class="colorNote font-size-small">当前时速</text>
         </view>
       </view>
       <view class="baseContent" wx:if="{{info_isOver}}">
         <image class="imgReached" src="../resouces/image/reached.png"></image>
-        <text class="isReachedText isReachBox"><text class="isReachedText maxWidth one_line">{{info_username || userInfo.userName}}</text><text class="one_line isReachedText colorMain">已到达</text></text>
+        <text class="isReachedText isReachBox font-size-title"><text class="isReachedText maxWidth one_line">{{info_username || userInfo.userName}}</text><text class="one_line isReachedText colorMain">已到达</text></text>
       </view>
-      <view class="baseTime center">
-        <text class="colorNote">更新于{{info_update || myupdate}}</text>
+      <view class="baseTime center borderBottom">
+        <text class="colorNote font-size-small">更新于{{info_update || myupdate}}</text>
       </view>
     </view>
     <!--地图信息展示-->

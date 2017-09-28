@@ -275,7 +275,7 @@ map{
 .top-scroll{
   width: 100%;
   height: 200rpx;
-  border-bottom: 2rpx solid #cccccc;
+  border-bottom: 2rpx solid #e6e6e6;
 }
 .hasReached{
   color: #09d292;
@@ -295,9 +295,10 @@ map{
   height: 140rpx;
 }
 .username-box{
-  width: 140;
+  width: 140rpx;
   height: 60rpx;
   position: relative;
+  font-size: 24rpx;
 }
 .triangle-position{
   position: absolute;
@@ -309,7 +310,7 @@ map{
   width: 80rpx;
   height: 80rpx;
   border-radius: 50%;
-  border: 4rpx solid #cccccc;
+  border: 8rpx solid #cccccc;
 }
 .item-userinfo-display{
   width: 100%;
@@ -321,11 +322,12 @@ map{
 .sharecircle{
   width: 80rpx;
   height: 80rpx;
-  border-radius: 50%;
   border: 7rpx solid #cccccc;
+  border-radius: 50%;
   position: relative;
   background-color: #ffffff;
 }
+
 .sharerow{
   position: absolute;
   left: 50%;
@@ -355,7 +357,7 @@ map{
 .baseItem{
   height: 120rpx;
   width: 230rpx;
-  border: 2rpx solid #cccccc;
+  border: 2rpx solid #e6e6e6;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -373,9 +375,9 @@ map{
   display: inline-block;
 }
 .imgReached{
-  width: 140rpx;
+  width: 180rpx;
   height: 120rpx;
-  margin-left: 120rpx;
+  margin-left: 80rpx;
 }
 .isReachBox{
   margin-left: 50rpx;

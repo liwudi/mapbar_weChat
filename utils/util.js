@@ -69,9 +69,41 @@ function dealCatch(callback,next){
     }
   })
 }
-
+function dealTime(time) {
+  let isNumber = true;
+  let arr = [];
+  let item = '';
+  for (let i = 0; i < time.length; i++) {
+    let index = time.charCodeAt(i);
+    console.log(index);
+    if (47 < index && index < 58) {
+      if (isNumber == true) {
+        item += time[i]
+      }
+      if (isNumber == false) {
+        arr.push(item);
+        item = '';
+        item += time[i]
+      }
+      isNumber = true;
+    } else {
+      if (isNumber == false) {
+        item += time[i]
+      }
+      if (isNumber == true) {
+        arr.push(item);
+        item = '';
+        item += time[i]
+      }
+      isNumber = false;
+    }
+  }
+  arr.push(item);
+  return arr;
+}
 module.exports = {
   systemInfo,
   getNowDate,
   dealCatch,
+  dealTime
 }
