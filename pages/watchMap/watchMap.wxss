@@ -46,6 +46,9 @@ map{
     box-sizing: border-box;
 }
 .point-title{
+  padding-left: 30rpx;
+  padding-right: 30rpx;
+  box-sizing: border-box;
     width: 500rpx;
     height: 60rpx;
     font-size: 36rpx;
@@ -57,6 +60,9 @@ map{
     white-space: nowrap;
 }
 .point-content{
+  padding-left: 30rpx;
+  padding-right: 30rpx;
+  box-sizing: border-box;
     width: 500rpx;
     height: 40rpx;
     font-size: 26rpx;
